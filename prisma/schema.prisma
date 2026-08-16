@@ -57,6 +57,7 @@ model Projects {
   slug           String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  archivedAt     DateTime?
 
   organizationId String @db.Uuid
   organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
