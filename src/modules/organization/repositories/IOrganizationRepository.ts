@@ -6,7 +6,7 @@ export interface IOrganizationRepository {
   update(
     id: string,
     data: Partial<ICreateOrganization>,
-  ): Promise<IOrganization>;
+  ): Promise<IOrganization | undefined>;
   delete(id: string): Promise<void>;
   findById(id: string): Promise<IOrganization | undefined>;
 }
