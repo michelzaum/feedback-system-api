@@ -35,7 +35,9 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
     this.organizations = this.organizations.filter((item) => item.id !== id);
     return Promise.resolve();
   }
+
   findById(id: string): Promise<IOrganization | undefined> {
-    throw new Error("Method not implemented.");
+    const organization = this.organizations.find((organization) => organization.id === id);
+    return Promise.resolve(organization);
   }
 }
