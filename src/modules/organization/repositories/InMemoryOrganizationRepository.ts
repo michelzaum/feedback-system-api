@@ -17,6 +17,7 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
     this.organizations.push(organization);
     return Promise.resolve(organization);
   }
+
   update(id: string, data: Partial<ICreateOrganization>): Promise<IOrganization | undefined> {
     this.organizations.forEach((item) => {
       if (item.id === id) {
@@ -31,7 +32,8 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
   }
 
   delete(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    this.organizations = this.organizations.filter((item) => item.id !== id);
+    return Promise.resolve();
   }
   findById(id: string): Promise<IOrganization | undefined> {
     throw new Error("Method not implemented.");
