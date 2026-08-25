@@ -17,9 +17,19 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
     this.organizations.push(organization);
     return Promise.resolve(organization);
   }
-  update(id: string, data: Partial<ICreateOrganization>): Promise<IOrganization> {
-    throw new Error("Method not implemented.");
+  update(id: string, data: Partial<ICreateOrganization>): Promise<IOrganization | undefined> {
+    this.organizations.forEach((item) => {
+      if (item.id === id) {
+        item.name = data.name ?? item.name;
+        item.slug = data.slug ?? item.slug;
+        item.updatedAt = new Date();
+        return Promise.resolve(item);
+      }
+    });
+
+    return Promise.resolve(undefined);
   }
+
   delete(id: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
