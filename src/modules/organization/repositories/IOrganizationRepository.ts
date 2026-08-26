@@ -8,5 +8,5 @@ export interface IOrganizationRepository {
     data: Partial<ICreateOrganization>,
   ): Promise<IOrganization | undefined>;
   delete(id: string): Promise<void>;
-  findById(id: string): Promise<IOrganization | undefined>;
+  findById(id: string): Promise<IOrganization | null>;
 }
