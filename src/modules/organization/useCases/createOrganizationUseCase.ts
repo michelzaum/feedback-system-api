@@ -7,6 +7,11 @@ export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, 
   constructor(private readonly organizationRepository: IOrganizationRepository) { }
 
   async execute(data: ICreateOrganization): Promise<IOrganization> {
-    return await this.organizationRepository.create(data);
+    const newOrganizattion = {
+      ...data,
+      slug: data.name.toLowerCase().replace(/ /g, "-"),
+    }
+
+    return await this.organizationRepository.create(newOrganizattion);
   }
 }
