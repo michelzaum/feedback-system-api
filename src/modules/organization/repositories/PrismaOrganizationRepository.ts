@@ -1,7 +1,7 @@
 import { prisma } from "../../../lib/prisma";
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
-import type { IOrganizationRepository } from "./IOrganizationRepository";
+import type { IOrganizationRepository } from "./interfaces/IOrganizationRepository";
 
 export class PrismaOrganizationRepository implements IOrganizationRepository {
   async create(data: ICreateOrganization): Promise<IOrganization> {

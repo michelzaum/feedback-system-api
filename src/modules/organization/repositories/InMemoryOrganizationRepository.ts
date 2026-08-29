@@ -1,6 +1,6 @@
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
-import type { IOrganizationRepository } from "./IOrganizationRepository";
+import type { IOrganizationRepository } from "./interfaces/IOrganizationRepository";
 
 export class InMemoryOrganizationRepository implements IOrganizationRepository {
   private organizations: IOrganization[] = [];
@@ -36,8 +36,8 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
     return Promise.resolve();
   }
 
-  findById(id: string): Promise<IOrganization | undefined> {
-    const organization = this.organizations.find((organization) => organization.id === id);
+  findById(id: string): Promise<IOrganization | null> {
+    const organization = this.organizations.find((organization) => organization.id === id) || null;
     return Promise.resolve(organization);
   }
 }
