@@ -1,5 +1,5 @@
-import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
-import type { IOrganization } from "../interfaces/IOrganization";
+import type { ICreateOrganization } from "../../interfaces/ICreateOrganization";
+import type { IOrganization } from "../../interfaces/IOrganization";
 
 export interface IOrganizationRepository {
   create(data: ICreateOrganization): Promise<IOrganization>;
