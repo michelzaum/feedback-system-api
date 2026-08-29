@@ -1,4 +1,4 @@
-import type { IOrganizationRepository } from "../repositories/IOrganizationRepository";
+import type { IOrganizationRepository } from "../repositories/interfaces/IOrganizationRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
