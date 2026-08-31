@@ -1,3 +1,4 @@
+import type { Request, Response } from "express";
 import type { FindOrganizationByIdUseCase } from "../useCases/findOrganizationByIdUseCase";
 
 interface IFindOrganizationByIdRequest {
@@ -9,7 +10,7 @@ interface IFindOrganizationByIdRequest {
 export class FindOrganizationByIdController {
   constructor(private readonly findOrganizationByIdUseCase: FindOrganizationByIdUseCase) { }
 
-  async handle(request: IFindOrganizationByIdRequest, response: any) {
+  async handle(request: Request<any, any, IFindOrganizationByIdRequest>, response: Response) {
     const { id } = request.params;
 
     try {

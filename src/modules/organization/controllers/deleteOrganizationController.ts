@@ -1,3 +1,4 @@
+import type { Request, Response } from "express";
 import type { DeleteOrganizationUseCase } from "../useCases/deleteOrganizationUseCase";
 
 interface IDeleteOrganizationRequest {
@@ -9,7 +10,7 @@ interface IDeleteOrganizationRequest {
 export class DeleteOrganizationController {
   constructor(private readonly deleteOrganizationUseCase: DeleteOrganizationUseCase) { }
 
-  async handle(request: IDeleteOrganizationRequest, response: any) {
+  async handle(request: Request<any, any, IDeleteOrganizationRequest>, response: Response) {
     const { id } = request.params;
 
     try {
