@@ -1,0 +1,23 @@
+import type { Request, Response } from "express";
+import type { FindOrganizationByIdUseCase } from "../useCases/findOrganizationByIdUseCase";
+import type { IFindOrganizationByIdRequest } from "./interfaces/IFindOrganizationByIdRequest";
+
+export class FindOrganizationByIdController {
+  constructor(private readonly findOrganizationByIdUseCase: FindOrganizationByIdUseCase) { }
+
+  async handle(request: Request<any, any, IFindOrganizationByIdRequest>, response: Response) {
+    const { id } = request.params;
+
+    try {
+      const organization = await this.findOrganizationByIdUseCase.execute({ id });
+
+      if (!organization) {
+        return response.status(404).json({ error: "Organization not found" });
+      }
+
+      return response.json(organization);
+    } catch (error: any) {
+      return response.status(400).json({ error: error.message });
+    }
+  }
+}

@@ -12,12 +12,82 @@ datasource db {
   provider = "postgresql"
 }
 
-model Organization {
-  id        String       @id @default(uuid()) @db.Uuid
-  name      String
-  slug      String       @unique
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+model Organizations {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  memberships Memberships[]
+  projects    Projects[]
 
-  @@map("organization")
+  @@map("organizations")
+}
+
+model Users {
+  id             String       @id @default(uuid()) @db.Uuid
+  name           String
+  email          String       @unique
+  password_hash  String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  memberships    Memberships[]
+
+  @@map("users")
+}
+
+model Memberships {
+  organizationId String @db.Uuid
+  userId         String @db.Uuid
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  role           String
+
+  organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  users          Users        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([organizationId, userId])
+  @@map("memberships")
+}
+
+model Projects {
+  id             String       @id @default(uuid()) @db.Uuid
+  name           String
+  description    String
+  slug           String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  archivedAt     DateTime?
+
+  organizationId String @db.Uuid
+  organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  feedbacks      Feedbacks[]
+
+  @@unique([organizationId, slug])
+  @@map("projects")
+}
+
+model Feedbacks {
+  id             String      @id @default(uuid()) @db.Uuid
+  title          String
+  description    String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  projectId      String      @db.Uuid
+  project        Projects    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  statusId       String      @db.Uuid
+  status         FeedbackStatus @relation(fields: [statusId], references: [id])
+
+  @@map("feedbacks")
+}
+
+model FeedbackStatus {
+  id             String      @id @default(uuid()) @db.Uuid
+  status         String
+
+  feedbackId     String      @db.Uuid
+  feedbacks      Feedbacks[]
+
+  @@map("feedback_status")
 }
