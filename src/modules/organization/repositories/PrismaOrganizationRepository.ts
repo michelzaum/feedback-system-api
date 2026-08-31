@@ -3,8 +3,13 @@ import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
 import type { IOrganizationRepository } from "./interfaces/IOrganizationRepository";
 
+interface IPrismaCreateOrganization {
+  name: string;
+  slug: string;
+}
+
 export class PrismaOrganizationRepository implements IOrganizationRepository {
-  async create(data: ICreateOrganization): Promise<IOrganization> {
+  async create(data: IPrismaCreateOrganization): Promise<IOrganization> {
     return prisma.organizations.create({
       data: {
         name: data.name,
