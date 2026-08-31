@@ -1,11 +1,6 @@
 import type { Request, Response } from "express";
 import type { DeleteOrganizationUseCase } from "../useCases/deleteOrganizationUseCase";
-
-interface IDeleteOrganizationRequest {
-  params: {
-    id: string;
-  };
-}
+import type { IDeleteOrganizationRequest } from "./interfaces/IDeleteOrganizationRequest";
 
 export class DeleteOrganizationController {
   constructor(private readonly deleteOrganizationUseCase: DeleteOrganizationUseCase) { }

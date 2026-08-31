@@ -1,11 +1,6 @@
 import type { Request, Response } from "express";
 import type { FindOrganizationByIdUseCase } from "../useCases/findOrganizationByIdUseCase";
-
-interface IFindOrganizationByIdRequest {
-  params: {
-    id: string;
-  };
-}
+import type { IFindOrganizationByIdRequest } from "./interfaces/IFindOrganizationByIdRequest";
 
 export class FindOrganizationByIdController {
   constructor(private readonly findOrganizationByIdUseCase: FindOrganizationByIdUseCase) { }

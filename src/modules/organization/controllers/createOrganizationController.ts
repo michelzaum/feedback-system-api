@@ -1,9 +1,6 @@
 import type { Request, Response } from 'express';
 import type { CreateOrganizationUseCase } from "../useCases/createOrganizationUseCase";
-
-interface ICreateOrganizationRequest {
-  name: string;
-}
+import type { ICreateOrganizationRequest } from './interfaces/ICreateOrganizationRequest';
 
 export class CreateOrganizationController {
   constructor(private readonly createOrganizationUseCase: CreateOrganizationUseCase) { }

@@ -1,13 +1,7 @@
 import type { Request, Response } from "express";
 import type { UpdateOrganizationUseCase } from "../useCases/updateOrganizationUseCase";
-
-interface IUpdateOrganizationRequestParams {
-  id: string;
-}
-
-interface IUpdateOrganizationRequestBody {
-  name: string;
-}
+import type { IUpdateOrganizationRequestParams } from "./interfaces/IUpdateOrganizationRequestParams";
+import type { IUpdateOrganizationRequestBody } from "./interfaces/IUpdateOrganizationRequestBody";
 
 export class UpdateOrganizationController {
   constructor(private readonly updateOrganizationUseCase: UpdateOrganizationUseCase) { }
