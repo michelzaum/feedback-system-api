@@ -1,4 +1,4 @@
-export interface ICreateOrganizationRepository {
+export interface ICreateOrganizationRepositoryInput {
   name: string;
   slug: string;
 }

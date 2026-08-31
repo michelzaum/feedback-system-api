@@ -1,11 +1,11 @@
 import type { IOrganization } from "../../interfaces/IOrganization";
-import type { ICreateOrganizationRepository } from "./ICreateOrganizationRepository";
+import type { ICreateOrganizationRepositoryInput } from "./ICreateOrganizationRepository";
 
 export interface IOrganizationRepository {
-  create(data: ICreateOrganizationRepository): Promise<IOrganization>;
+  create(data: ICreateOrganizationRepositoryInput): Promise<IOrganization>;
   update(
     id: string,
-    data: Partial<ICreateOrganizationRepository>,
+    data: Partial<ICreateOrganizationRepositoryInput>,
   ): Promise<IOrganization | undefined>;
   delete(id: string): Promise<void>;
   findById(id: string): Promise<IOrganization | null>;

@@ -1,10 +1,10 @@
 import { prisma } from "../../../lib/prisma";
 import type { IOrganization } from "../interfaces/IOrganization";
-import type { ICreateOrganizationRepository } from "./interfaces/ICreateOrganizationRepository";
+import type { ICreateOrganizationRepositoryInput } from "./interfaces/ICreateOrganizationRepository";
 import type { IOrganizationRepository } from "./interfaces/IOrganizationRepository";
 
 export class PrismaOrganizationRepository implements IOrganizationRepository {
-  async create(data: ICreateOrganizationRepository): Promise<IOrganization> {
+  async create(data: ICreateOrganizationRepositoryInput): Promise<IOrganization> {
     return prisma.organizations.create({
       data: {
         name: data.name,
@@ -15,7 +15,7 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
 
   async update(
     id: string,
-    data: Partial<ICreateOrganizationRepository>,
+    data: Partial<ICreateOrganizationRepositoryInput>,
   ): Promise<IOrganization | undefined> {
     const updateData: { name?: string; slug?: string } = {};
 
