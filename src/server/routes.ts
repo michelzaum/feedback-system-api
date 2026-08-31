@@ -10,10 +10,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send({ message: 'Hello World!' });
-});
-
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
 app.get('/organizations/:id', async (req, res) => makeFindOrganizationByIdController().handle(req, res));
