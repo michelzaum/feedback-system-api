@@ -2,6 +2,7 @@ import 'dotenv/config'
 
 import express from 'express';
 import { makeCreateOrganizationController } from '../modules/organization/factories/makeCreateOrganizationController';
+import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
 
 const app = express();
 
@@ -12,6 +13,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
+app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
+
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
