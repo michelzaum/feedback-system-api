@@ -1,11 +1,11 @@
-import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
+import type { ICreateOrganizationRepositoryInput } from "./interfaces/ICreateOrganizationRepository";
 import type { IOrganization } from "../interfaces/IOrganization";
 import type { IOrganizationRepository } from "./interfaces/IOrganizationRepository";
 
 export class InMemoryOrganizationRepository implements IOrganizationRepository {
   private organizations: IOrganization[] = [];
 
-  create(data: ICreateOrganization): Promise<IOrganization> {
+  create(data: ICreateOrganizationRepositoryInput): Promise<IOrganization> {
     const organization = {
       id: this.organizations.length.toString(),
       name: data.name,
@@ -18,7 +18,7 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
     return Promise.resolve(organization);
   }
 
-  update(id: string, data: Partial<ICreateOrganization>): Promise<IOrganization | undefined> {
+  update(id: string, data: Partial<ICreateOrganizationRepositoryInput>): Promise<IOrganization | undefined> {
     this.organizations.forEach((item) => {
       if (item.id === id) {
         item.name = data.name ?? item.name;
