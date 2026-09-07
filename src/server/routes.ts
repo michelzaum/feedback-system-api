@@ -8,6 +8,7 @@ import { makeDeleteOrganizationController } from '../modules/organization/factor
 import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
 import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
+import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationContr
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
+app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
 
 app.listen(3001, () => {
