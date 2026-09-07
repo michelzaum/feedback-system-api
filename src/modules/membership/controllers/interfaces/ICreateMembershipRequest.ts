@@ -1,9 +1,8 @@
 export interface ICreateMembershipRequestParams {
-  organizationId?: string;
+  organizationId: string;
 }
 
 export interface ICreateMembershipRequestBody {
   userId: string;
   role: string;
-  organizationId?: string;
 }
