@@ -9,6 +9,10 @@ import { makeCreateUserController } from '../modules/user/factories/makeCreateUs
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
 import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
+import { makeCreateMembershipController } from '../modules/membership/factories/makeCreateMembershipController';
+import { makeFindMembershipController } from '../modules/membership/factories/makeFindMembershipController';
+import { makeUpdateMembershipController } from '../modules/membership/factories/makeUpdateMembershipController';
+import { makeDeleteMembershipController } from '../modules/membership/factories/makeDeleteMembershipController';
 
 const app = express();
 
@@ -23,6 +27,11 @@ app.post('/users', async (req, res) => makeCreateUserController().handle(req, re
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
+
+app.post('/organizations/:organizationId/memberships', async (req, res) => makeCreateMembershipController().handle(req, res));
+app.get('/organizations/:organizationId/memberships/:userId', async (req, res) => makeFindMembershipController().handle(req, res));
+app.patch('/organizations/:organizationId/memberships/:userId', async (req, res) => makeUpdateMembershipController().handle(req, res));
+app.delete('/organizations/:organizationId/memberships/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
 
 
 app.listen(3001, () => {
