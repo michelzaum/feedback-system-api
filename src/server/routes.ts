@@ -19,7 +19,7 @@ app.get('/organizations/:id', async (req, res) => makeFindOrganizationByIdContro
 app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationController().handle(req, res));
 
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
-app.put('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
+app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 
 
