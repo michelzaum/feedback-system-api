@@ -9,7 +9,7 @@ export interface IMembershipRepository {
     data: Partial<Pick<ICreateMembershipRepositoryInput, "role">>,
   ): Promise<IMembership | undefined>;
   delete(organizationId: string, userId: string): Promise<void>;
-  findByOrganizationIdAndUserId(
+  findMembership(
     organizationId: string,
     userId: string,
   ): Promise<IMembership | null>;
