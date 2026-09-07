@@ -5,6 +5,7 @@ import { makeCreateOrganizationController } from '../modules/organization/factor
 import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
 import { makeFindOrganizationByIdController } from '../modules/organization/factories/makeFindOrganizationByIdController';
 import { makeDeleteOrganizationController } from '../modules/organization/factories/makeDeleteOrganizationController';
+import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.post('/organizations', async (req, res) => makeCreateOrganizationController(
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
 app.get('/organizations/:id', async (req, res) => makeFindOrganizationByIdController().handle(req, res));
 app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationController().handle(req, res));
+
+app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 
 
 app.listen(3001, () => {
