@@ -29,10 +29,10 @@ app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(re
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
-app.post('/organizations/:organizationId/memberships', async (req, res) => makeCreateMembershipController().handle(req, res));
-app.get('/organizations/:organizationId/memberships/:userId', async (req, res) => makeFindMembershipController().handle(req, res));
-app.patch('/organizations/:organizationId/memberships/:userId', async (req, res) => makeUpdateMembershipController().handle(req, res));
-app.delete('/organizations/:organizationId/memberships/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
+app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
+app.get('/organizations/:organizationId/members/:userId', async (req, res) => makeFindMembershipController().handle(req, res));
+app.patch('/organizations/:organizationId/members/:userId', async (req, res) => makeUpdateMembershipController().handle(req, res));
+app.delete('/organizations/:organizationId/members/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
 app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrganizationMembersController().handle(req, res));
 
 
