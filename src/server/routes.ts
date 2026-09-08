@@ -9,6 +9,11 @@ import { makeCreateUserController } from '../modules/user/factories/makeCreateUs
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
 import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
+import { makeCreateMembershipController } from '../modules/membership/factories/makeCreateMembershipController';
+import { makeFindMembershipController } from '../modules/membership/factories/makeFindMembershipController';
+import { makeUpdateMembershipController } from '../modules/membership/factories/makeUpdateMembershipController';
+import { makeDeleteMembershipController } from '../modules/membership/factories/makeDeleteMembershipController';
+import { makeGetOrganizationMembersController } from '../modules/membership/factories/makeGetOrganizationMembersController';
 
 const app = express();
 
@@ -24,6 +29,11 @@ app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(re
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
+app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
+app.get('/organizations/:organizationId/members/:userId', async (req, res) => makeFindMembershipController().handle(req, res));
+app.patch('/organizations/:organizationId/members/:userId', async (req, res) => makeUpdateMembershipController().handle(req, res));
+app.delete('/organizations/:organizationId/members/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
+app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrganizationMembersController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
