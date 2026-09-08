@@ -1,4 +1,5 @@
 import type { IMembership } from "../../interfaces/IMembership";
+import type { IMember } from "../../interfaces/IMember";
 import type { ICreateMembershipRepositoryInput } from "./ICreateMembershipRepository";
 
 export interface IMembershipRepository {
@@ -13,4 +14,5 @@ export interface IMembershipRepository {
     organizationId: string,
     userId: string,
   ): Promise<IMembership | null>;
+  findManyByOrganizationId(organizationId: string): Promise<IMember[]>;
 }

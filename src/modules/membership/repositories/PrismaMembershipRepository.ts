@@ -2,6 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import type { IMembership } from "../interfaces/IMembership";
 import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembershipRepository";
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
+import type { IMember } from "../interfaces/IMember";
 
 export class PrismaMembershipRepository implements IMembershipRepository {
   async create(data: ICreateMembershipRepositoryInput): Promise<IMembership> {
@@ -55,5 +56,19 @@ export class PrismaMembershipRepository implements IMembershipRepository {
         },
       },
     });
+  }
+
+  async findManyByOrganizationId(organizationId: string): Promise<IMember[]> {
+    const memberships = await prisma.memberships.findMany({
+      where: { organizationId },
+      include: { users: true },
+    });
+
+    return memberships.map((membership) => ({
+      id: membership.users.id,
+      name: membership.users.name,
+      email: membership.users.email,
+      role: membership.role,
+    }));
   }
 }

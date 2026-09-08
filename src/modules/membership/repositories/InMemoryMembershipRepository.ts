@@ -1,6 +1,7 @@
 import type { IMembership } from "../interfaces/IMembership";
 import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembershipRepository";
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
+import type { IMember } from "../interfaces/IMember";
 
 export class InMemoryMembershipRepository implements IMembershipRepository {
   private memberships: IMembership[] = [];
@@ -53,5 +54,15 @@ export class InMemoryMembershipRepository implements IMembershipRepository {
         (item) => item.organizationId === organizationId && item.userId === userId,
       ) || null;
     return Promise.resolve(membership);
+  }
+
+  async findManyByOrganizationId(organizationId: string): Promise<IMember[]> {
+    const memberships = this.memberships.filter((m) => m.organizationId === organizationId);
+    return memberships.map((m) => ({
+      id: m.userId,
+      name: "",
+      email: "",
+      role: m.role,
+    }));
   }
 }
