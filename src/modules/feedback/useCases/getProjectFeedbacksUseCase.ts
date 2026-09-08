@@ -7,6 +7,6 @@ export class GetProjectFeedbacksUseCase implements IUseCase<IGetFeedbacksByProje
   constructor(private readonly feedbackRepository: IFeedbackRepository) { }
 
   async execute(data: IGetFeedbacksByProject): Promise<IFeedback[]> {
-    return await this.feedbackRepository.findFeedbacksByProjectId(data.projectId);
+    return await this.feedbackRepository.findManyByProjectId(data.projectId);
   }
 }

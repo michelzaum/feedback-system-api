@@ -7,37 +7,38 @@ import type { IFeedbackRepository } from "./interfaces/IFeedbackRepository";
 export class PrismaFeedbackRepository implements IFeedbackRepository {
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
     const { organizationId, ...rest } = data;
-    return prisma.feedbacks.create({
+    const result = await prisma.feedbacks.create({
       data: {
         ...rest,
       },
-      include: { project: true, status: true },
     });
+    return { ...result, feedbackId: result.id };
   }
 
   async update(
-    id: string,
+    feedbackId: string,
     data: IUpdateFeedbackRepositoryInput,
   ): Promise<IFeedback | undefined> {
-    return await prisma.feedbacks.update({
-      where: { id },
+    const result = await prisma.feedbacks.update({
+      where: { id: feedbackId },
       data: {
         statusId: data.statusId,
       },
     });
+    return result ? { ...result, feedbackId: result.id } : undefined;
   }
 
-  async findById(id: string): Promise<IFeedback | null> {
-    return await prisma.feedbacks.findUnique({
-      where: { id },
-      include: { project: true, status: true },
+  async findById(feedbackId: string): Promise<IFeedback | null> {
+    const result = await prisma.feedbacks.findUnique({
+      where: { id: feedbackId },
     });
+    return result ? { ...result, feedbackId: result.id } : null;
   }
 
-  async findFeedbacksByProjectId(projectId: string): Promise<IFeedback[]> {
-    return await prisma.feedbacks.findMany({
+  async findManyByProjectId(projectId: string): Promise<IFeedback[]> {
+    const results = await prisma.feedbacks.findMany({
       where: { projectId },
-      include: { project: true, status: true },
     });
+    return results.map((r) => ({ ...r, feedbackId: r.id }));
   }
 }

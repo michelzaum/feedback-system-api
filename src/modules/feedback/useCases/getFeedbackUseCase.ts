@@ -7,6 +7,6 @@ export class GetFeedbackUseCase implements IUseCase<IGetFeedback, IFeedback | nu
   constructor(private readonly feedbackRepository: IFeedbackRepository) { }
 
   async execute(data: IGetFeedback): Promise<IFeedback | null> {
-    return await this.feedbackRepository.findById(data.id);
+    return await this.feedbackRepository.findById(data.feedbackId);
   }
 }

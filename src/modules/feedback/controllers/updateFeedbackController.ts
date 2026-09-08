@@ -7,11 +7,11 @@ export class UpdateFeedbackController {
   constructor(private readonly updateFeedbackUseCase: UpdateFeedbackUseCase) { }
 
   async handle(request: Request<IUpdateFeedbackRequestParams, any, IUpdateFeedbackRequestBody>, response: Response) {
-    const { id } = request.params;
+    const { feedbackId } = request.params;
     const { statusId } = request.body;
 
     try {
-      const feedback = await this.updateFeedbackUseCase.execute({ id, statusId });
+      const feedback = await this.updateFeedbackUseCase.execute({ feedbackId, statusId });
 
       if (!feedback) {
         return response.status(404).json({ error: "Feedback not found" });

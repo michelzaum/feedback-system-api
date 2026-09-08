@@ -8,7 +8,7 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
 
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
     const feedback: IFeedback = {
-      id: this.feedbacks.length.toString(),
+      feedbackId: this.feedbacks.length.toString(),
       title: data.title,
       description: data.description,
       createdAt: new Date(),
@@ -21,9 +21,9 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
     return Promise.resolve(feedback);
   }
 
-  async update(id: string, data: IUpdateFeedbackRepositoryInput): Promise<IFeedback | undefined> {
+  async update(feedbackId: string, data: IUpdateFeedbackRepositoryInput): Promise<IFeedback | undefined> {
     this.feedbacks.forEach((item) => {
-      if (item.id === id) {
+      if (item.feedbackId === feedbackId) {
         item.statusId = data.statusId;
         item.updatedAt = new Date();
         return Promise.resolve(item);
@@ -33,12 +33,12 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
     return Promise.resolve(undefined);
   }
 
-  async findById(id: string): Promise<IFeedback | null> {
-    const feedback = this.feedbacks.find((f) => f.id === id) || null;
+  async findById(feedbackId: string): Promise<IFeedback | null> {
+    const feedback = this.feedbacks.find((f) => f.feedbackId === feedbackId) || null;
     return Promise.resolve(feedback);
   }
 
-  async findFeedbacksByProjectId(projectId: string): Promise<IFeedback[]> {
+  async findManyByProjectId(projectId: string): Promise<IFeedback[]> {
     const feedbacks = this.feedbacks.filter((f) => f.projectId === projectId);
     return Promise.resolve(feedbacks);
   }

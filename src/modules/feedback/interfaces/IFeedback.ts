@@ -1,5 +1,5 @@
 export interface IFeedback {
-  id: string;
+  feedbackId: string;
   title: string;
   description: string;
   createdAt: Date;

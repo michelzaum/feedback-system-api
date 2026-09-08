@@ -1,4 +1,4 @@
 export interface IUpdateFeedback {
-  id: string;
+  feedbackId: string;
   statusId: string;
 }
