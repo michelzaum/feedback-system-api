@@ -83,11 +83,10 @@ model Feedbacks {
 }
 
 model FeedbackStatus {
-  id             String      @id @default(uuid()) @db.Uuid
-  status         String
+  id       String     @id @default(uuid()) @db.Uuid
+  status   String     @default("PENDING")
 
-  feedbackId     String      @db.Uuid
-  feedbacks      Feedbacks[]
+  feedbacks Feedbacks[]
 
   @@map("feedback_status")
 }
