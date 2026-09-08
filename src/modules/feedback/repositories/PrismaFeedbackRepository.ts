@@ -6,10 +6,15 @@ import type { IFeedbackRepository } from "./interfaces/IFeedbackRepository";
 
 export class PrismaFeedbackRepository implements IFeedbackRepository {
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
-    const { organizationId, ...rest } = data;
+    const { projectId } = data;
+    const statusId = await prisma.feedbackStatus.findFirst();
+
     const result = await prisma.feedbacks.create({
       data: {
-        ...rest,
+        title: data.title,
+        description: data.description,
+        projectId,
+        statusId: statusId?.id ?? '',
       },
     });
     return { ...result, feedbackId: result.id };

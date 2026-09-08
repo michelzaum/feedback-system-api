@@ -3,5 +3,4 @@ export interface ICreateFeedback {
   description: string;
   projectId: string;
   organizationId: string;
-  statusId: string;
 }
