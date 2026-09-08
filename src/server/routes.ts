@@ -35,7 +35,6 @@ app.patch('/organizations/:organizationId/members/:userId', async (req, res) => 
 app.delete('/organizations/:organizationId/members/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
 app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrganizationMembersController().handle(req, res));
 
-
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
 });
