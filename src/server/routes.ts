@@ -1,19 +1,28 @@
 import 'dotenv/config';
 
 import express from 'express';
+
 import { makeCreateOrganizationController } from '../modules/organization/factories/makeCreateOrganizationController';
 import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
 import { makeFindOrganizationByIdController } from '../modules/organization/factories/makeFindOrganizationByIdController';
 import { makeDeleteOrganizationController } from '../modules/organization/factories/makeDeleteOrganizationController';
+
 import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
 import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
+
 import { makeCreateMembershipController } from '../modules/membership/factories/makeCreateMembershipController';
 import { makeFindMembershipController } from '../modules/membership/factories/makeFindMembershipController';
 import { makeUpdateMembershipController } from '../modules/membership/factories/makeUpdateMembershipController';
 import { makeDeleteMembershipController } from '../modules/membership/factories/makeDeleteMembershipController';
 import { makeGetOrganizationMembersController } from '../modules/membership/factories/makeGetOrganizationMembersController';
+
+import { makeCreateProjectController } from '../modules/project/factories/makeCreateProjectController';
+import { makeUpdateProjectController } from '../modules/project/factories/makeUpdateProjectController';
+import { makeFindProjectByIdController } from '../modules/project/factories/makeFindProjectByIdController';
+import { makeFindProjectByOrganizationController } from '../modules/project/factories/makeFindProjectByOrganizationController';
+import { makeDeleteProjectController } from '../modules/project/factories/makeDeleteProjectController';
 
 const app = express();
 
@@ -34,6 +43,12 @@ app.get('/organizations/:organizationId/members/:userId', async (req, res) => ma
 app.patch('/organizations/:organizationId/members/:userId', async (req, res) => makeUpdateMembershipController().handle(req, res));
 app.delete('/organizations/:organizationId/members/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
 app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrganizationMembersController().handle(req, res));
+
+app.post('/organizations/:organizationId/projects', async (req, res) => makeCreateProjectController().handle(req, res));
+app.patch('/organizations/:organizationId/projects/:id', async (req, res) => makeUpdateProjectController().handle(req, res));
+app.get('/organizations/:organizationId/projects/:id', async (req, res) => makeFindProjectByIdController().handle(req, res));
+app.get('/organizations/:organizationId/projects', async (req, res) => makeFindProjectByOrganizationController().handle(req, res));
+app.delete('/organizations/:organizationId/projects/:id', async (req, res) => makeDeleteProjectController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
