@@ -1,3 +1,5 @@
+import { FeedbackStatus } from "../../../../../generate/prisma/enums";
+
 export interface IUpdateFeedbackRepositoryInput {
-  statusId: string;
+  status: FeedbackStatus;
 }

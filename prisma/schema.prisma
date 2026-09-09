@@ -73,20 +73,17 @@ model Feedbacks {
   description    String
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+  status         FeedbackStatus @default(PENDING)
 
   projectId      String      @db.Uuid
   project        Projects    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  statusId       String      @db.Uuid
-  status         FeedbackStatus @relation(fields: [statusId], references: [id])
 
   @@map("feedbacks")
 }
 
-model FeedbackStatus {
-  id       String     @id @default(uuid()) @db.Uuid
-  status   String     @default("PENDING")
-
-  feedbacks Feedbacks[]
-
-  @@map("feedback_status")
+enum FeedbackStatus {
+  PENDING
+  IN_REVIEW
+  PLANNED
+  COMPLETED
 }

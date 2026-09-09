@@ -1,3 +1,4 @@
+import { FeedbackStatus } from "../../../../generate/prisma/enums";
 import type { ICreateFeedbackRepositoryInput } from "./interfaces/ICreateFeedbackRepository";
 import type { IUpdateFeedbackRepositoryInput } from "./interfaces/IUpdateFeedbackRepository";
 import type { IFeedback } from "../interfaces/IFeedback";
@@ -8,23 +9,23 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
 
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
     const feedback: IFeedback = {
-      feedbackId: this.feedbacks.length.toString(),
+      id: this.feedbacks.length.toString(),
       title: data.title,
       description: data.description,
       createdAt: new Date(),
       updatedAt: new Date(),
       projectId: data.projectId,
-      statusId: data.statusId,
+      status: data.status ?? FeedbackStatus.PENDING,
     };
 
     this.feedbacks.push(feedback);
     return Promise.resolve(feedback);
   }
 
-  async update(feedbackId: string, data: IUpdateFeedbackRepositoryInput): Promise<IFeedback | undefined> {
+  async update(id: string, data: IUpdateFeedbackRepositoryInput): Promise<IFeedback | undefined> {
     this.feedbacks.forEach((item) => {
-      if (item.feedbackId === feedbackId) {
-        item.statusId = data.statusId;
+      if (item.id === id) {
+        item.status = data.status;
         item.updatedAt = new Date();
         return Promise.resolve(item);
       }
@@ -33,8 +34,8 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
     return Promise.resolve(undefined);
   }
 
-  async findById(feedbackId: string): Promise<IFeedback | null> {
-    const feedback = this.feedbacks.find((f) => f.feedbackId === feedbackId) || null;
+  async findById(id: string): Promise<IFeedback | null> {
+    const feedback = this.feedbacks.find((f) => f.id === id) || null;
     return Promise.resolve(feedback);
   }
 

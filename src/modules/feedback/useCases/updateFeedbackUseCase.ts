@@ -7,14 +7,14 @@ export class UpdateFeedbackUseCase implements IUseCase<IUpdateFeedback, IFeedbac
   constructor(private readonly feedbackRepository: IFeedbackRepository) { }
 
   async execute(data: IUpdateFeedback): Promise<IFeedback | undefined> {
-    const feedbackExists = await this.feedbackRepository.findById(data.feedbackId);
+    const feedbackExists = await this.feedbackRepository.findById(data.id);
 
     if (!feedbackExists) {
       throw new Error("Feedback not found");
     }
 
-    return await this.feedbackRepository.update(data.feedbackId, {
-      statusId: data.statusId,
+    return await this.feedbackRepository.update(data.id, {
+      status: data.status,
     });
   }
 }

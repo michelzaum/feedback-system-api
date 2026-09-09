@@ -56,9 +56,9 @@ app.get('/organizations/:organizationId/projects', async (req, res) => makeFindP
 app.delete('/organizations/:organizationId/projects/:id', async (req, res) => makeDeleteProjectController().handle(req, res));
 
 app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
-app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:feedbackId', async (req, res) => makeGetFeedbackController().handle(req, res));
+app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
-app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:feedbackId', async (req, res) => makeUpdateFeedbackController().handle(req, res));
+app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
