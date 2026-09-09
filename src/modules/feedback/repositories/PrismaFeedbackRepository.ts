@@ -1,4 +1,5 @@
 import { prisma } from "../../../lib/prisma";
+import { FeedbackStatus } from "../../../../generate/prisma/enums";
 import type { IFeedback } from "../interfaces/IFeedback";
 import type { ICreateFeedbackRepositoryInput } from "./interfaces/ICreateFeedbackRepository";
 import type { IUpdateFeedbackRepositoryInput } from "./interfaces/IUpdateFeedbackRepository";
@@ -6,15 +7,14 @@ import type { IFeedbackRepository } from "./interfaces/IFeedbackRepository";
 
 export class PrismaFeedbackRepository implements IFeedbackRepository {
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
-    const { projectId } = data;
-    const statusId = await prisma.feedbackStatus.findFirst();
+    const { projectId, status = FeedbackStatus.PENDING } = data;
 
     const result = await prisma.feedbacks.create({
       data: {
         title: data.title,
         description: data.description,
         projectId,
-        statusId: statusId?.id ?? '',
+        status,
       },
     });
     return { ...result, feedbackId: result.id };
@@ -27,7 +27,7 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
     const result = await prisma.feedbacks.update({
       where: { id: feedbackId },
       data: {
-        statusId: data.statusId,
+        status: data.status,
       },
     });
     return result ? { ...result, feedbackId: result.id } : undefined;
@@ -44,6 +44,6 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
     const results = await prisma.feedbacks.findMany({
       where: { projectId },
     });
-    return results.map((r) => ({ ...r, feedbackId: r.id }));
+    return results.map((r): IFeedback => ({ ...r, feedbackId: r.id }));
   }
 }

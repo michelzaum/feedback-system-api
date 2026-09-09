@@ -1,3 +1,4 @@
+import { FeedbackStatus } from "../../../../generate/prisma/enums";
 import type { ICreateFeedbackRepositoryInput } from "./interfaces/ICreateFeedbackRepository";
 import type { IUpdateFeedbackRepositoryInput } from "./interfaces/IUpdateFeedbackRepository";
 import type { IFeedback } from "../interfaces/IFeedback";
@@ -14,7 +15,7 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
       createdAt: new Date(),
       updatedAt: new Date(),
       projectId: data.projectId,
-      statusId: data.statusId,
+      status: data.status ?? FeedbackStatus.PENDING,
     };
 
     this.feedbacks.push(feedback);
@@ -24,7 +25,7 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
   async update(feedbackId: string, data: IUpdateFeedbackRepositoryInput): Promise<IFeedback | undefined> {
     this.feedbacks.forEach((item) => {
       if (item.feedbackId === feedbackId) {
-        item.statusId = data.statusId;
+        item.status = data.status;
         item.updatedAt = new Date();
         return Promise.resolve(item);
       }

@@ -14,7 +14,7 @@ export class UpdateFeedbackUseCase implements IUseCase<IUpdateFeedback, IFeedbac
     }
 
     return await this.feedbackRepository.update(data.feedbackId, {
-      statusId: data.statusId,
+      status: data.status,
     });
   }
 }
