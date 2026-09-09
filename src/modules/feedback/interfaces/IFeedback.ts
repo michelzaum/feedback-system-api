@@ -1,7 +1,7 @@
 import { FeedbackStatus } from "../../../../generate/prisma/enums";
 
 export interface IFeedback {
-  feedbackId: string;
+  id: string;
   title: string;
   description: string;
   createdAt: Date;

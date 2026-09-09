@@ -1,3 +1,3 @@
 export interface IUpdateFeedbackRequestParams {
-  feedbackId: string;
+  id: string;
 }

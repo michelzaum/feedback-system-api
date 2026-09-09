@@ -1,3 +1,3 @@
 export interface IGetFeedbackRequest {
-  feedbackId: string;
+  id: string;
 }
