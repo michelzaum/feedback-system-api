@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 import express from 'express';
+import cors from 'cors';
 
 import { makeCreateOrganizationController } from '../modules/organization/factories/makeCreateOrganizationController';
 import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
@@ -31,6 +32,7 @@ import { makeUpdateFeedbackController } from '../modules/feedback/factories/make
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
