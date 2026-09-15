@@ -30,6 +30,8 @@ import { makeGetFeedbackController } from '../modules/feedback/factories/makeGet
 import { makeGetProjectFeedbacksController } from '../modules/feedback/factories/makeGetProjectFeedbacksController';
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
 
+import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
+
 const app = express();
 
 app.use(cors());
@@ -61,6 +63,7 @@ app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
+app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
