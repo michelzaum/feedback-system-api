@@ -15,7 +15,6 @@ export class PrismaUserRepository implements IUserRepository {
         id: true,
         name: true,
         email: true,
-        password_hash: true,
       },
     });
   }
@@ -49,7 +48,6 @@ export class PrismaUserRepository implements IUserRepository {
         id: true,
         name: true,
         email: true,
-        password_hash: true,
       },
     });
   }
@@ -67,7 +65,6 @@ export class PrismaUserRepository implements IUserRepository {
         id: true,
         name: true,
         email: true,
-        password_hash: true,
       },
     });
   }
