@@ -10,6 +10,6 @@ export class SignInController {
 
     const token = await this.signInUseCase.execute({ email, password });
 
-    response.json({ token });
+    response.cookie('token', token, { httpOnly: true }).json({ message: 'sign-in successful' });
   }
 }
