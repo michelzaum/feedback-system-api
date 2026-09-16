@@ -16,6 +16,10 @@ export class SignInUseCase implements IUseCase<ISignInRequest, string> {
       throw new Error("User not found");
     }
 
+    if (!user.password_hash) {
+      throw new Error("Invalid credentials");
+    }
+
     const passwordMatch = await compare(password, user.password_hash);
 
     if (!passwordMatch) {
