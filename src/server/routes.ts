@@ -30,10 +30,14 @@ import { makeGetFeedbackController } from '../modules/feedback/factories/makeGet
 import { makeGetProjectFeedbacksController } from '../modules/feedback/factories/makeGetProjectFeedbacksController';
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
 
+import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));

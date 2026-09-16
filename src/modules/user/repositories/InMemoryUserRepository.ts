@@ -10,6 +10,7 @@ export class InMemoryUserRepository implements IUserRepository {
       id: this.users.length.toString(),
       name: data.name,
       email: data.email,
+      password_hash: data.password_hash,
     };
 
     this.users.push(user);
@@ -39,6 +40,11 @@ export class InMemoryUserRepository implements IUserRepository {
 
   findById(id: string): Promise<IUser | null> {
     const user = this.users.find((user) => user.id === id) || null;
+    return Promise.resolve(user);
+  }
+
+  findByEmail(email: string): Promise<IUser | null> {
+    const user = this.users.find((user) => user.email === email) || null;
     return Promise.resolve(user);
   }
 }
