@@ -14,6 +14,7 @@ import { makeDeleteOrganizationController } from '../modules/organization/factor
 import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
 import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
+import { makeGetCurrentUserController } from '../modules/user/factories/makeGetCurrentUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
 
 import { makeCreateMembershipController } from '../modules/membership/factories/makeCreateMembershipController';
@@ -53,6 +54,7 @@ app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationContr
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
+app.get('/me', async (req, res) => makeGetCurrentUserController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
 app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
