@@ -29,6 +29,7 @@ import { makeUpdateProjectController } from '../modules/project/factories/makeUp
 import { makeFindProjectByIdController } from '../modules/project/factories/makeFindProjectByIdController';
 import { makeFindProjectByOrganizationController } from '../modules/project/factories/makeFindProjectByOrganizationController';
 import { makeDeleteProjectController } from '../modules/project/factories/makeDeleteProjectController';
+import { makeFindMyProjectsController } from '../modules/project/factories/makeFindMyProjectsController';
 
 import { makeCreateFeedbackController } from '../modules/feedback/factories/makeCreateFeedbackController';
 import { makeGetFeedbackController } from '../modules/feedback/factories/makeGetFeedbackController';
@@ -69,6 +70,7 @@ app.post('/organizations/:organizationId/projects', async (req, res) => makeCrea
 app.patch('/organizations/:organizationId/projects/:id', async (req, res) => makeUpdateProjectController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:id', async (req, res) => makeFindProjectByIdController().handle(req, res));
 app.get('/organizations/:organizationId/projects', async (req, res) => makeFindProjectByOrganizationController().handle(req, res));
+app.get('/me/projects', async (req, res) => makeFindMyProjectsController().handle(req, res));
 app.delete('/organizations/:organizationId/projects/:id', async (req, res) => makeDeleteProjectController().handle(req, res));
 
 app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
