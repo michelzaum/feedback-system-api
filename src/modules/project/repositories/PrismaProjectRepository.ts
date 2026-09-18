@@ -56,4 +56,18 @@ export class PrismaProjectRepository implements IProjectRepository {
       where: { organizationId },
     });
   }
+
+  async findProjectsByUserId(userId: string): Promise<IProject[]> {
+    return await prisma.projects.findMany({
+      where: {
+        organization: {
+          memberships: {
+            some: {
+              userId,
+            },
+          },
+        },
+      },
+    });
+  }
 }
