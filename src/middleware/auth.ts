@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { type JwtPayload } from 'jsonwebtoken';
 
 declare module 'express' {
   interface Request {
@@ -15,8 +15,9 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-    req.userId = payload.userId;
+    const { userId } = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+    req.userId = userId;
     next();
   } catch {
     return res.status(401).json({ message: 'Invalid token' });

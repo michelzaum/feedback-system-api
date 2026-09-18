@@ -7,8 +7,13 @@ export class CreateOrganizationController {
 
   async handle(request: Request<any, any, ICreateOrganizationRequest>, response: Response) {
     const { name } = request.body;
+    const userId = request.userId
 
-    const organization = await this.createOrganizationUseCase.execute({ name });
+    if (!userId) {
+      return response.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const organization = await this.createOrganizationUseCase.execute({ name, userId });
 
     response.json(organization);
   }
