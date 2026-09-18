@@ -2,6 +2,9 @@ import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+import { authMiddleware } from '../middleware/auth';
 
 import { makeCreateOrganizationController } from '../modules/organization/factories/makeCreateOrganizationController';
 import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
@@ -11,6 +14,7 @@ import { makeDeleteOrganizationController } from '../modules/organization/factor
 import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
 import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
+import { makeGetCurrentUserController } from '../modules/user/factories/makeGetCurrentUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
 
 import { makeCreateMembershipController } from '../modules/membership/factories/makeCreateMembershipController';
@@ -36,8 +40,11 @@ const app = express();
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
+
+app.use(authMiddleware);
 
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
@@ -47,6 +54,7 @@ app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationContr
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
+app.get('/me', async (req, res) => makeGetCurrentUserController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
 app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
