@@ -2,6 +2,7 @@ import type { IMembership } from "../interfaces/IMembership";
 import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembershipRepository";
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
 import type { IMember } from "../interfaces/IMember";
+import type { IMyOrganization } from "../interfaces/IMyOrganization";
 
 export class InMemoryMembershipRepository implements IMembershipRepository {
   private memberships: IMembership[] = [];
@@ -62,6 +63,17 @@ export class InMemoryMembershipRepository implements IMembershipRepository {
       id: m.userId,
       name: "",
       email: "",
+      role: m.role,
+    }));
+  }
+
+  async findManyByUserId(userId: string): Promise<IMyOrganization[]> {
+    const memberships = this.memberships.filter((m) => m.userId === userId);
+    // In-memory doesn't store organization data, return minimal info
+    return memberships.map((m) => ({
+      id: "",
+      name: "",
+      slug: "",
       role: m.role,
     }));
   }
