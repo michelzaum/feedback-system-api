@@ -2,6 +2,9 @@ import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+import { authMiddleware } from '../middleware/auth';
 
 import { makeCreateOrganizationController } from '../modules/organization/factories/makeCreateOrganizationController';
 import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
@@ -36,8 +39,11 @@ const app = express();
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
+
+app.use(authMiddleware);
 
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
