@@ -3,6 +3,7 @@ import type { IMembership } from "../interfaces/IMembership";
 import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembershipRepository";
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
 import type { IMember } from "../interfaces/IMember";
+import type { IMyOrganization } from "../interfaces/IMyOrganization";
 
 export class PrismaMembershipRepository implements IMembershipRepository {
   async create(data: ICreateMembershipRepositoryInput): Promise<IMembership> {
@@ -68,6 +69,20 @@ export class PrismaMembershipRepository implements IMembershipRepository {
       id: membership.users.id,
       name: membership.users.name,
       email: membership.users.email,
+      role: membership.role,
+    }));
+  }
+
+  async findManyByUserId(userId: string): Promise<IMyOrganization[]> {
+    const memberships = await prisma.memberships.findMany({
+      where: { userId },
+      include: { organization: true },
+    });
+
+    return memberships.map((membership) => ({
+      id: membership.organization.id,
+      name: membership.organization.name,
+      slug: membership.organization.slug,
       role: membership.role,
     }));
   }

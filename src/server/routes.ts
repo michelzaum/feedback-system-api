@@ -22,6 +22,7 @@ import { makeFindMembershipController } from '../modules/membership/factories/ma
 import { makeUpdateMembershipController } from '../modules/membership/factories/makeUpdateMembershipController';
 import { makeDeleteMembershipController } from '../modules/membership/factories/makeDeleteMembershipController';
 import { makeGetOrganizationMembersController } from '../modules/membership/factories/makeGetOrganizationMembersController';
+import { makeFindMyOrganizationsController } from '../modules/membership/factories/makeFindMyOrganizationsController';
 
 import { makeCreateProjectController } from '../modules/project/factories/makeCreateProjectController';
 import { makeUpdateProjectController } from '../modules/project/factories/makeUpdateProjectController';
@@ -55,6 +56,7 @@ app.post('/users', async (req, res) => makeCreateUserController().handle(req, re
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 app.get('/me', async (req, res) => makeGetCurrentUserController().handle(req, res));
+app.get('/me/organizations', async (req, res) => makeFindMyOrganizationsController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
 app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
