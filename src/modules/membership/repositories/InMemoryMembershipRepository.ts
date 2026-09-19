@@ -87,13 +87,13 @@ export class InMemoryMembershipRepository implements IMembershipRepository {
       const userId = m.userId;
       const existing = grouped.get(userId);
       if (existing) {
-        existing.organizations.push({ id: m.organizationId, name: m.organizationId });
+        existing.organizations.push({ id: m.organizationId, name: m.organizationId, role: m.role });
       } else {
         grouped.set(userId, {
           id: m.userId,
           name: "",
           email: "",
-          organizations: [{ id: m.organizationId, name: m.organizationId }],
+          organizations: [{ id: m.organizationId, name: m.organizationId, role: m.role }],
         });
       }
     }

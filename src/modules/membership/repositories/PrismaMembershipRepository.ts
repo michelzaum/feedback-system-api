@@ -100,13 +100,13 @@ export class PrismaMembershipRepository implements IMembershipRepository {
       const userId = membership.users.id;
       const existing = grouped.get(userId);
       if (existing) {
-        existing.organizations.push({ id: membership.organization.id, name: membership.organization.name });
+        existing.organizations.push({ id: membership.organization.id, name: membership.organization.name, role: membership.role });
       } else {
         grouped.set(userId, {
           id: membership.users.id,
           name: membership.users.name,
           email: membership.users.email,
-          organizations: [{ id: membership.organization.id, name: membership.organization.name }],
+          organizations: [{ id: membership.organization.id, name: membership.organization.name, role: membership.role }],
         });
       }
     }

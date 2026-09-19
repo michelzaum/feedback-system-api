@@ -1,6 +1,7 @@
 export interface IOrganizationInfo {
   id: string;
   name: string;
+  role: string;
 }
 
 export interface IMembersFromOrganization {
