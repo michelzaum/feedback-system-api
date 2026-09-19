@@ -3,6 +3,7 @@ import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembe
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
 import type { IMember } from "../interfaces/IMember";
 import type { IMyOrganization } from "../interfaces/IMyOrganization";
+import type { IMembersFromOrganization } from "../interfaces/IMembersFromOrganization";
 
 export class InMemoryMembershipRepository implements IMembershipRepository {
   private memberships: IMembership[] = [];
@@ -76,5 +77,27 @@ export class InMemoryMembershipRepository implements IMembershipRepository {
       slug: "",
       role: m.role,
     }));
+  }
+
+  async findManyMembersByOrganizationIds(organizationIds: string[]): Promise<IMembersFromOrganization[]> {
+    const memberships = this.memberships.filter((m) => organizationIds.includes(m.organizationId));
+    const grouped = new Map<string, IMembersFromOrganization>();
+
+    for (const m of memberships) {
+      const userId = m.userId;
+      const existing = grouped.get(userId);
+      if (existing) {
+        existing.organizations.push({ id: m.organizationId, name: m.organizationId });
+      } else {
+        grouped.set(userId, {
+          id: m.userId,
+          name: "",
+          email: "",
+          organizations: [{ id: m.organizationId, name: m.organizationId }],
+        });
+      }
+    }
+
+    return Array.from(grouped.values());
   }
 }
