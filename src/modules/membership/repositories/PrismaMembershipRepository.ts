@@ -4,6 +4,7 @@ import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembe
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
 import type { IMember } from "../interfaces/IMember";
 import type { IMyOrganization } from "../interfaces/IMyOrganization";
+import type { IMembersFromOrganization } from "../interfaces/IMembersFromOrganization";
 
 export class PrismaMembershipRepository implements IMembershipRepository {
   async create(data: ICreateMembershipRepositoryInput): Promise<IMembership> {
@@ -85,5 +86,31 @@ export class PrismaMembershipRepository implements IMembershipRepository {
       slug: membership.organization.slug,
       role: membership.role,
     }));
+  }
+
+  async findManyMembersByOrganizationIds(organizationIds: string[]): Promise<IMembersFromOrganization[]> {
+    const memberships = await prisma.memberships.findMany({
+      where: { organizationId: { in: organizationIds } },
+      include: { users: true, organization: true },
+    });
+
+    const grouped = new Map<string, IMembersFromOrganization>();
+
+    for (const membership of memberships) {
+      const userId = membership.users.id;
+      const existing = grouped.get(userId);
+      if (existing) {
+        existing.organizations.push({ id: membership.organization.id, name: membership.organization.name, role: membership.role });
+      } else {
+        grouped.set(userId, {
+          id: membership.users.id,
+          name: membership.users.name,
+          email: membership.users.email,
+          organizations: [{ id: membership.organization.id, name: membership.organization.name, role: membership.role }],
+        });
+      }
+    }
+
+    return Array.from(grouped.values());
   }
 }
