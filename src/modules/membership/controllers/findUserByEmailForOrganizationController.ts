@@ -1,13 +1,12 @@
 import type { Request, Response } from 'express';
 import type { FindUserByEmailForOrganizationUseCase } from "../useCases/findUserByEmailForOrganizationUseCase";
-import type { IFindUserByEmailForOrganizationRequestBody } from './interfaces/IFindUserByEmailForOrganizationRequest';
+import type { IFindUserByEmailForOrganizationRequestParams } from './interfaces/IFindUserByEmailForOrganizationRequest';
 
 export class FindUserByEmailForOrganizationController {
   constructor(private readonly findUserByEmailForOrganizationUseCase: FindUserByEmailForOrganizationUseCase) { }
 
-  async handle(request: Request<any, any, IFindUserByEmailForOrganizationRequestBody>, response: Response) {
-    const { organizationId } = request.params;
-    const { email } = request.body;
+  async handle(request: Request<IFindUserByEmailForOrganizationRequestParams, any, any>, response: Response) {
+    const { organizationId, email } = request.params;
 
     if (!organizationId) {
       return response.status(400).json({ error: "organizationId is required" });
