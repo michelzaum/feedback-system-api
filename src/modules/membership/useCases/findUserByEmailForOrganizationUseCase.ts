@@ -27,6 +27,7 @@ export class FindUserByEmailForOrganizationUseCase implements IUseCase<{ organiz
     }
 
     return {
+      userId: user.id,
       name: user.name,
       email: user.email,
       createdAt: user.createdAt,
