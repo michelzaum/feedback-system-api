@@ -9,6 +9,7 @@ export interface IProjectRepository {
   ): Promise<IProject | undefined>;
   delete(id: string): Promise<void>;
   findById(id: string): Promise<IProject | null>;
+  findBySlug(organizationId: string, slug: string): Promise<IProject | null>;
   findProjectsByOrganizationId(organizationId: string): Promise<IProject[]>;
   findProjectsByUserId(userId: string): Promise<IProject[]>;
 }
