@@ -40,7 +40,7 @@ import { makeGetProjectFeedbacksController } from '../modules/feedback/factories
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
 
 import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
-import { makeSignOutController } from '../modules/sign-in/factories/makeSignOutController';
+import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
 
 const app = express();
 
