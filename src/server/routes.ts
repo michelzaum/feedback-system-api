@@ -40,6 +40,7 @@ import { makeGetProjectFeedbacksController } from '../modules/feedback/factories
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
 
 import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
+import { makeSignOutController } from '../modules/sign-in/factories/makeSignOutController';
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
+app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 
 app.use(authMiddleware);
 
