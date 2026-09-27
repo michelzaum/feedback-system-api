@@ -1,5 +1,15 @@
 # AGENTS.md
 
+## Mandatory Caveman Workflow
+
+**Always use the `caveman` skill for every task in this repository.**
+
+Before performing any work, load and follow the instructions in the `caveman` skill. When applicable, also use the relevant Caveman sub-skills (for example, `caveman-explore`, `caveman-review`, `caveman-learn`, `caveman-commit`, or `caveman-optimize`).
+
+Do not bypass or ignore the Caveman workflow unless the user explicitly instructs you to do so.
+
+For code changes, follow the Caveman workflow before inspecting, modifying, or committing code.
+
 ## Commit Rules
 
 1. **Always follow Conventional Commits pattern** when asked to commit code. Use the format: `type: description` (e.g., `feat: add sign-in page`, `fix: handle null response`, `docs: update install instructions`).

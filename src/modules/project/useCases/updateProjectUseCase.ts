@@ -2,6 +2,7 @@ import type { IProjectRepository } from "../repositories/interfaces/IProjectRepo
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IUpdateProject } from "../interfaces/IUpdateProject";
 import type { IProject } from "../interfaces/IProject";
+import { createPublicProjectUrl } from "./createPublicProjectUrl";
 
 export class UpdateProjectUseCase implements IUseCase<IUpdateProject, IProject | undefined> {
   constructor(private readonly projectRepository: IProjectRepository) { }
@@ -14,11 +15,13 @@ export class UpdateProjectUseCase implements IUseCase<IUpdateProject, IProject |
     }
 
     const slug = data.name.toLowerCase().replace(/ /g, "-");
+    const organizationSlug = await this.projectRepository.findOrganizationSlug(projectExists.organizationId);
 
     return await this.projectRepository.update(data.id, {
       name: data.name,
       description: data.description,
       slug,
+      url: createPublicProjectUrl(organizationSlug, slug),
     });
   }
 }
