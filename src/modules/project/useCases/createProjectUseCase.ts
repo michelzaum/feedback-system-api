@@ -2,14 +2,18 @@ import type { IProjectRepository } from "../repositories/interfaces/IProjectRepo
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateProject } from "../interfaces/ICreateProject";
 import type { IProject } from "../interfaces/IProject";
+import { createPublicProjectUrl } from "./createPublicProjectUrl";
 
 export class CreateProjectUseCase implements IUseCase<ICreateProject, IProject> {
   constructor(private readonly projectRepository: IProjectRepository) { }
 
   async execute(data: ICreateProject): Promise<IProject> {
+    const organizationSlug = await this.projectRepository.findOrganizationSlug(data.organizationId);
+    const slug = data.name.toLowerCase().replace(/ /g, "-");
     const newProject = {
       ...data,
-      slug: data.name.toLowerCase().replace(/ /g, "-"),
+      slug,
+      url: createPublicProjectUrl(organizationSlug, slug),
     };
 
     return await this.projectRepository.create(newProject);
