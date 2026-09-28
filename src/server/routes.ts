@@ -51,6 +51,8 @@ app.use(cookieParser());
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 
+app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+
 app.use(authMiddleware);
 
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
@@ -81,7 +83,6 @@ app.get('/organizations/:organizationId/projects', async (req, res) => makeFindP
 app.get('/me/projects', async (req, res) => makeFindMyProjectsController().handle(req, res));
 app.delete('/organizations/:organizationId/projects/:id', async (req, res) => makeDeleteProjectController().handle(req, res));
 
-app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
