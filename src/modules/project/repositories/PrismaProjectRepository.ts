@@ -69,6 +69,17 @@ export class PrismaProjectRepository implements IProjectRepository {
     });
   }
 
+  async findBySlugs(organizationSlug: string, projectSlug: string): Promise<IProject | null> {
+    return await prisma.projects.findFirst({
+      where: {
+        slug: projectSlug,
+        organization: {
+          slug: organizationSlug,
+        },
+      },
+    });
+  }
+
   async findProjectsByOrganizationId(organizationId: string): Promise<IProject[]> {
     return await prisma.projects.findMany({
       where: { organizationId },

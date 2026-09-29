@@ -30,6 +30,7 @@ import { makeCreateProjectController } from '../modules/project/factories/makeCr
 import { makeUpdateProjectController } from '../modules/project/factories/makeUpdateProjectController';
 import { makeFindProjectByIdController } from '../modules/project/factories/makeFindProjectByIdController';
 import { makeFindProjectBySlugController } from '../modules/project/factories/makeFindProjectBySlugController';
+import { makeFindProjectBySlugsController } from '../modules/project/factories/makeFindProjectBySlugsController';
 import { makeFindProjectByOrganizationController } from '../modules/project/factories/makeFindProjectByOrganizationController';
 import { makeDeleteProjectController } from '../modules/project/factories/makeDeleteProjectController';
 import { makeFindMyProjectsController } from '../modules/project/factories/makeFindMyProjectsController';
@@ -52,6 +53,7 @@ app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res)
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 
 app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+app.get('/organizations/:organizationSlug/projects/:projectSlug', async (req, res) => makeFindProjectBySlugsController().handle(req, res));
 
 app.use(authMiddleware);
 
