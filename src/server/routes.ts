@@ -52,7 +52,7 @@ app.use(cookieParser());
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 
-app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+app.post('/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
 app.get('/organizations/:organizationSlug/projects/:projectSlug', async (req, res) => makeFindProjectBySlugsController().handle(req, res));
 
 app.use(authMiddleware);

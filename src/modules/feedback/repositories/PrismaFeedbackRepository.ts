@@ -10,7 +10,7 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
     const { projectId, status = FeedbackStatus.PENDING } = data;
 
     const project = await prisma.projects.findFirst({
-      where: { id: projectId, organizationId: data.organizationId },
+      where: { id: projectId },
       select: { id: true },
     });
 
