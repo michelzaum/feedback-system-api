@@ -39,6 +39,7 @@ import { makeCreateFeedbackController } from '../modules/feedback/factories/make
 import { makeGetFeedbackController } from '../modules/feedback/factories/makeGetFeedbackController';
 import { makeGetProjectFeedbacksController } from '../modules/feedback/factories/makeGetProjectFeedbacksController';
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
+import { makeFindFeedbacksByOrganizationController } from '../modules/feedback/factories/makeFindFeedbacksByOrganizationController';
 
 import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
 import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
@@ -94,6 +95,7 @@ app.delete('/organizations/:organizationId/projects/:id', async (req, res) => ma
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
+app.get('/organizations/:organizationId/feedbacks', async (req, res) => makeFindFeedbacksByOrganizationController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');

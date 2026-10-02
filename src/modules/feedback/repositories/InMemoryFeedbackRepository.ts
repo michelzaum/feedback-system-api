@@ -3,9 +3,12 @@ import type { ICreateFeedbackRepositoryInput } from "./interfaces/ICreateFeedbac
 import type { IUpdateFeedbackRepositoryInput } from "./interfaces/IUpdateFeedbackRepository";
 import type { IFeedback } from "../interfaces/IFeedback";
 import type { IFeedbackRepository } from "./interfaces/IFeedbackRepository";
+import type { IProjectRepository } from "../../project/repositories/interfaces/IProjectRepository";
 
 export class InMemoryFeedbackRepository implements IFeedbackRepository {
   private feedbacks: IFeedback[] = [];
+
+  constructor(private readonly projectRepository: IProjectRepository) { }
 
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
     const feedback: IFeedback = {
@@ -41,6 +44,13 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
 
   async findManyByProjectId(projectId: string): Promise<IFeedback[]> {
     const feedbacks = this.feedbacks.filter((f) => f.projectId === projectId);
+    return Promise.resolve(feedbacks);
+  }
+
+  async findManyByOrganizationId(organizationId: string): Promise<IFeedback[]> {
+    const projects = await this.projectRepository.findProjectsByOrganizationId(organizationId);
+    const projectIds = new Set(projects.map((p) => p.id));
+    const feedbacks = this.feedbacks.filter((f) => projectIds.has(f.projectId));
     return Promise.resolve(feedbacks);
   }
 }

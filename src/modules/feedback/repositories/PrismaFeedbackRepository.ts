@@ -51,4 +51,14 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
       where: { projectId },
     });
   }
+
+  async findManyByOrganizationId(organizationId: string): Promise<IFeedback[]> {
+    return await prisma.feedbacks.findMany({
+      where: {
+        project: {
+          organizationId,
+        },
+      },
+    });
+  }
 }
