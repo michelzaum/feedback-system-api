@@ -30,6 +30,7 @@ import { makeCreateProjectController } from '../modules/project/factories/makeCr
 import { makeUpdateProjectController } from '../modules/project/factories/makeUpdateProjectController';
 import { makeFindProjectByIdController } from '../modules/project/factories/makeFindProjectByIdController';
 import { makeFindProjectBySlugController } from '../modules/project/factories/makeFindProjectBySlugController';
+import { makeFindProjectBySlugsController } from '../modules/project/factories/makeFindProjectBySlugsController';
 import { makeFindProjectByOrganizationController } from '../modules/project/factories/makeFindProjectByOrganizationController';
 import { makeDeleteProjectController } from '../modules/project/factories/makeDeleteProjectController';
 import { makeFindMyProjectsController } from '../modules/project/factories/makeFindMyProjectsController';
@@ -38,6 +39,7 @@ import { makeCreateFeedbackController } from '../modules/feedback/factories/make
 import { makeGetFeedbackController } from '../modules/feedback/factories/makeGetFeedbackController';
 import { makeGetProjectFeedbacksController } from '../modules/feedback/factories/makeGetProjectFeedbacksController';
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
+import { makeFindFeedbacksByOrganizationController } from '../modules/feedback/factories/makeFindFeedbacksByOrganizationController';
 
 import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
 import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
@@ -48,16 +50,22 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+// Public routes
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 
+app.post('/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+app.get('/organizations/:organizationSlug/projects/:projectSlug', async (req, res) => makeFindProjectBySlugsController().handle(req, res));
+
 app.use(authMiddleware);
 
+// Organizations
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
 app.get('/organizations/:id', async (req, res) => makeFindOrganizationByIdController().handle(req, res));
 app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationController().handle(req, res));
 
+// Users
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
@@ -66,6 +74,7 @@ app.get('/me/organizations', async (req, res) => makeFindMyOrganizationsControll
 app.get('/me/members', async (req, res) => makeFindMyOrganizationsMembersController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
+// Memberships
 app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
 app.get('/organizations/:organizationId/members/find-by-email/:email', async (req, res) => makeFindUserByEmailForOrganizationController().handle(req, res));
 app.get('/organizations/:organizationId/members/:userId', async (req, res) => makeFindMembershipController().handle(req, res));
@@ -73,6 +82,7 @@ app.patch('/organizations/:organizationId/members/:userId', async (req, res) => 
 app.delete('/organizations/:organizationId/members/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
 app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrganizationMembersController().handle(req, res));
 
+// Projects
 app.post('/organizations/:organizationId/projects', async (req, res) => makeCreateProjectController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:id', async (req, res) => makeUpdateProjectController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:id', async (req, res) => makeFindProjectByIdController().handle(req, res));
@@ -81,10 +91,11 @@ app.get('/organizations/:organizationId/projects', async (req, res) => makeFindP
 app.get('/me/projects', async (req, res) => makeFindMyProjectsController().handle(req, res));
 app.delete('/organizations/:organizationId/projects/:id', async (req, res) => makeDeleteProjectController().handle(req, res));
 
-app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+// Feedbacks
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
+app.get('/organizations/:organizationId/feedbacks', async (req, res) => makeFindFeedbacksByOrganizationController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');

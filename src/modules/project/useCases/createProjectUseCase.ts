@@ -2,7 +2,7 @@ import type { IProjectRepository } from "../repositories/interfaces/IProjectRepo
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateProject } from "../interfaces/ICreateProject";
 import type { IProject } from "../interfaces/IProject";
-import { createPublicProjectUrl } from "./createPublicProjectUrl";
+import { createPublicProjectPath } from "./createPublicProjectPath";
 
 export class CreateProjectUseCase implements IUseCase<ICreateProject, IProject> {
   constructor(private readonly projectRepository: IProjectRepository) { }
@@ -13,7 +13,7 @@ export class CreateProjectUseCase implements IUseCase<ICreateProject, IProject> 
     const newProject = {
       ...data,
       slug,
-      url: createPublicProjectUrl(organizationSlug, slug),
+      url: createPublicProjectPath(organizationSlug, slug),
     };
 
     return await this.projectRepository.create(newProject);

@@ -2,7 +2,7 @@ import type { IProjectRepository } from "../repositories/interfaces/IProjectRepo
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IUpdateProject } from "../interfaces/IUpdateProject";
 import type { IProject } from "../interfaces/IProject";
-import { createPublicProjectUrl } from "./createPublicProjectUrl";
+import { createPublicProjectPath } from "./createPublicProjectPath";
 
 export class UpdateProjectUseCase implements IUseCase<IUpdateProject, IProject | undefined> {
   constructor(private readonly projectRepository: IProjectRepository) { }
@@ -21,7 +21,7 @@ export class UpdateProjectUseCase implements IUseCase<IUpdateProject, IProject |
       name: data.name,
       description: data.description,
       slug,
-      url: createPublicProjectUrl(organizationSlug, slug),
+      url: createPublicProjectPath(organizationSlug, slug),
     });
   }
 }

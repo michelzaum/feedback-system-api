@@ -9,6 +9,15 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
     const { projectId, status = FeedbackStatus.PENDING } = data;
 
+    const project = await prisma.projects.findFirst({
+      where: { id: projectId },
+      select: { id: true },
+    });
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
     return await prisma.feedbacks.create({
       data: {
         title: data.title,
@@ -40,6 +49,16 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
   async findManyByProjectId(projectId: string): Promise<IFeedback[]> {
     return await prisma.feedbacks.findMany({
       where: { projectId },
+    });
+  }
+
+  async findManyByOrganizationId(organizationId: string): Promise<IFeedback[]> {
+    return await prisma.feedbacks.findMany({
+      where: {
+        project: {
+          organizationId,
+        },
+      },
     });
   }
 }

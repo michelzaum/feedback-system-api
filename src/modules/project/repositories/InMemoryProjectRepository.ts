@@ -56,6 +56,11 @@ export class InMemoryProjectRepository implements IProjectRepository {
     return Promise.resolve(project);
   }
 
+  findBySlugs(organizationSlug: string, projectSlug: string): Promise<IProject | null> {
+    const project = this.projects.find((project) => project.organizationId === organizationSlug && project.slug === projectSlug) || null;
+    return Promise.resolve(project);
+  }
+
   findProjectsByOrganizationId(organizationId: string): Promise<IProject[]> {
     const projects = this.projects.filter((project) => project.organizationId === organizationId);
     return Promise.resolve(projects);
