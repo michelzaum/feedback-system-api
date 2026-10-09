@@ -53,6 +53,7 @@ app.use(cookieParser());
 // Public routes
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
+app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 
 app.post('/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
 app.get('/organizations/:organizationSlug/projects/:projectSlug', async (req, res) => makeFindProjectBySlugsController().handle(req, res));
@@ -66,7 +67,6 @@ app.get('/organizations/:id', async (req, res) => makeFindOrganizationByIdContro
 app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationController().handle(req, res));
 
 // Users
-app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
 app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 app.get('/me', async (req, res) => makeGetCurrentUserController().handle(req, res));
