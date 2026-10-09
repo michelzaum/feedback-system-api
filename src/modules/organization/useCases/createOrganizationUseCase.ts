@@ -3,7 +3,7 @@ import type { IMembershipRepository } from "../../membership/repositories/interf
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
-import type { ICreateMembership } from "../../membership/interfaces/ICreateMembership";
+import type { ICreateMembershipRepositoryInput } from "../../membership/repositories/interfaces/ICreateMembershipRepository";
 
 export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, IOrganization> {
   constructor(
@@ -19,7 +19,7 @@ export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, 
 
     const organization = await this.organizationRepository.create(newOrganization);
 
-    const membership: ICreateMembership = {
+    const membership: ICreateMembershipRepositoryInput = {
       organizationId: organization.id,
       userId: data.userId,
       role: 'ADMIN',

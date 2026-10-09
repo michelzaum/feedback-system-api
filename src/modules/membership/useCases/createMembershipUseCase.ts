@@ -8,6 +8,15 @@ export class CreateMembershipUseCase implements IUseCase<ICreateMembership, IMem
   constructor(private readonly membershipRepository: IMembershipRepository) { }
 
   async execute(data: ICreateMembership): Promise<IMembership> {
+    const requesterMembership = await this.membershipRepository.findMembership(
+      data.organizationId,
+      data.requesterUserId,
+    );
+
+    if (!requesterMembership || requesterMembership.role !== "ADMIN") {
+      throw new Error("Only admins can create memberships");
+    }
+
     const membershipExists = await this.membershipRepository.findMembership(
       data.organizationId,
       data.userId,

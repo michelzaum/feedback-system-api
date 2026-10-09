@@ -7,6 +7,15 @@ export class FindMembershipUseCase implements IUseCase<IFindMembership, IMembers
   constructor(private readonly membershipRepository: IMembershipRepository) { }
 
   async execute(data: IFindMembership): Promise<IMembership | null> {
+    const requesterMembership = await this.membershipRepository.findMembership(
+      data.organizationId,
+      data.requesterUserId,
+    );
+
+    if (!requesterMembership || requesterMembership.role !== "ADMIN") {
+      throw new Error("Only admins can view membership");
+    }
+
     return await this.membershipRepository.findMembership(data.organizationId, data.userId);
   }
 }

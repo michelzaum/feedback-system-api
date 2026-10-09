@@ -8,15 +8,19 @@ export class CreateMembershipController {
   async handle(request: Request<ICreateMembershipRequestParams, any, ICreateMembershipRequestBody>, response: Response) {
     const { organizationId } = request.params;
     const { userId, role } = request.body;
+    const requesterUserId = request.userId!;
 
     if (!organizationId) {
       return response.status(400).json({ error: "organizationId is required" });
     }
 
     try {
-      const membership = await this.createMembershipUseCase.execute({ organizationId, userId, role });
+      const membership = await this.createMembershipUseCase.execute({ organizationId, userId, requesterUserId, role });
       return response.status(201).json(membership);
     } catch (error: any) {
+      if (error.message === "Only admins can create memberships") {
+        return response.status(403).json({ error: error.message });
+      }
       return response.status(400).json({ error: error.message });
     }
   }
