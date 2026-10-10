@@ -23,6 +23,13 @@ export class CreateProjectUseCase implements IUseCase<ICreateProject, IProject> 
 
     const organizationSlug = await this.projectRepository.findOrganizationSlug(data.organizationId);
     const slug = data.name.toLowerCase().replace(/ /g, "-");
+
+    const slugExists = await this.projectRepository.findBySlug(data.organizationId, slug);
+
+    if (slugExists) {
+      throw new Error("Project slug already exists");
+    }
+
     const newProject = {
       ...data,
       slug,
