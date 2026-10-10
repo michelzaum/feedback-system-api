@@ -56,7 +56,27 @@ app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, re
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 
 app.post('/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
-app.get('/organizations/:organizationSlug/projects/:projectSlug', async (req, res) => makeFindProjectBySlugsController().handle(req, res));
+
+// CODE BELOW IS A TEMPORARY FIX TO AVOID A BUG, because the route /organizations/:organizationId/projects/:id has the same
+// shape of /organizations/:organizationSlug/projects/:projectSlug, so the public route take precedence and return no data
+// when try to find project by id (UUID format). We need to find a better solution to solve this.
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Handles both public slug URLs (/my-company/my-project) and id URLs
+// (/organizations/<uuid>/projects/<uuid>). Id URLs require auth + membership.
+app.get('/organizations/:organizationSlug/projects/:projectSlug', (req, res, next) => {
+  if (!UUID_PATTERN.test(req.params.projectSlug)) {
+    return next();
+  }
+  (req.params as Record<string, string>).id = req.params.projectSlug;
+  authMiddleware(req, res, next);
+}, async (req, res) => {
+  if (UUID_PATTERN.test(req.params.projectSlug)) {
+    return makeFindProjectByIdController().handle(req, res);
+  }
+  return makeFindProjectBySlugsController().handle(req, res);
+});
 
 app.use(authMiddleware);
 
@@ -85,7 +105,6 @@ app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrg
 // Projects
 app.post('/organizations/:organizationId/projects', async (req, res) => makeCreateProjectController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:id', async (req, res) => makeUpdateProjectController().handle(req, res));
-app.get('/organizations/:organizationId/projects/:id', async (req, res) => makeFindProjectByIdController().handle(req, res));
 app.get('/organizations/:organizationId/projects/by-slug/:slug', async (req, res) => makeFindProjectBySlugController().handle(req, res));
 app.get('/organizations/:organizationId/projects', async (req, res) => makeFindProjectByOrganizationController().handle(req, res));
 app.get('/me/projects', async (req, res) => makeFindMyProjectsController().handle(req, res));
