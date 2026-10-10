@@ -2,6 +2,7 @@ import type { IOrganization } from "../../interfaces/IOrganization";
 import type { ICreateOrganizationRepositoryInput } from "./ICreateOrganizationRepository";
 
 export interface IOrganizationRepository {
+  findBySlug(slug: string): Promise<IOrganization | null>;
   create(data: ICreateOrganizationRepositoryInput): Promise<IOrganization>;
   update(
     id: string,

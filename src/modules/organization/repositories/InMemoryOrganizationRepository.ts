@@ -40,4 +40,9 @@ export class InMemoryOrganizationRepository implements IOrganizationRepository {
     const organization = this.organizations.find((organization) => organization.id === id) || null;
     return Promise.resolve(organization);
   }
+
+  findBySlug(slug: string): Promise<IOrganization | null> {
+    const organization = this.organizations.find((organization) => organization.slug === slug) || null;
+    return Promise.resolve(organization);
+  }
 }

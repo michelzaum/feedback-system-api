@@ -12,9 +12,17 @@ export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, 
   ) { }
 
   async execute(data: ICreateOrganization): Promise<IOrganization> {
+    const slug = data.name.toLowerCase().replace(/ /g, "-");
+
+    const slugExists = await this.organizationRepository.findBySlug(slug);
+
+    if (slugExists) {
+      throw new Error("Organization slug already exists");
+    }
+
     const newOrganization = {
       ...data,
-      slug: data.name.toLowerCase().replace(/ /g, "-"),
+      slug,
     }
 
     const organization = await this.organizationRepository.create(newOrganization);

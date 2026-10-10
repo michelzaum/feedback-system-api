@@ -44,4 +44,10 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
       where: { id },
     });
   }
+
+  async findBySlug(slug: string): Promise<IOrganization | null> {
+    return await prisma.organizations.findUnique({
+      where: { slug },
+    });
+  }
 }
