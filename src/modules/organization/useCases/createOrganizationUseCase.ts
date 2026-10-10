@@ -1,14 +1,11 @@
 import type { IOrganizationRepository } from "../repositories/interfaces/IOrganizationRepository";
-import type { IMembershipRepository } from "../../membership/repositories/interfaces/IMembershipRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
-import type { ICreateMembershipRepositoryInput } from "../../membership/repositories/interfaces/ICreateMembershipRepository";
 
 export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, IOrganization> {
   constructor(
     private readonly organizationRepository: IOrganizationRepository,
-    private readonly membershipRepository: IMembershipRepository,
   ) { }
 
   async execute(data: ICreateOrganization): Promise<IOrganization> {
@@ -21,20 +18,15 @@ export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, 
     }
 
     const newOrganization = {
-      ...data,
+      name: data.name,
       slug,
     }
 
-    const organization = await this.organizationRepository.create(newOrganization);
-
-    const membership: ICreateMembershipRepositoryInput = {
-      organizationId: organization.id,
+    const membership = {
       userId: data.userId,
-      role: 'ADMIN',
+      role: 'ADMIN' as const,
     };
 
-    await this.membershipRepository.create(membership);
-
-    return organization;
+    return await this.organizationRepository.create(newOrganization, membership);
   }
 }

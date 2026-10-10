@@ -1,9 +1,13 @@
 import type { IOrganization } from "../../interfaces/IOrganization";
 import type { ICreateOrganizationRepositoryInput } from "./ICreateOrganizationRepository";
+import type { ICreateMembershipRepositoryInput } from "../../../membership/repositories/interfaces/ICreateMembershipRepository";
 
 export interface IOrganizationRepository {
   findBySlug(slug: string): Promise<IOrganization | null>;
-  create(data: ICreateOrganizationRepositoryInput): Promise<IOrganization>;
+  create(
+    organization: ICreateOrganizationRepositoryInput,
+    membership: Omit<ICreateMembershipRepositoryInput, "organizationId">,
+  ): Promise<IOrganization>;
   update(
     id: string,
     data: Partial<ICreateOrganizationRepositoryInput>,
