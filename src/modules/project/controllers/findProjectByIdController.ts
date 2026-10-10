@@ -7,9 +7,10 @@ export class FindProjectByIdController {
 
   async handle(request: Request<any, any, IFindProjectByIdRequest>, response: Response) {
     const { id } = request.params;
+    const requesterUserId = request.userId!;
 
     try {
-      const project = await this.findProjectByIdUseCase.execute({ id });
+      const project = await this.findProjectByIdUseCase.execute({ id, requesterUserId });
 
       if (!project) {
         return response.status(404).json({ error: "Project not found" });
@@ -17,6 +18,9 @@ export class FindProjectByIdController {
 
       return response.json(project);
     } catch (error: any) {
+      if (error.message === "Only organization members can view projects") {
+        return response.status(403).json({ error: error.message });
+      }
       return response.status(400).json({ error: error.message });
     }
   }
