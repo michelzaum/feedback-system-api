@@ -9,9 +9,10 @@ export class UpdateProjectController {
   async handle(request: Request<IUpdateProjectRequestParams, any, IUpdateProjectRequestBody>, response: Response) {
     const { id } = request.params;
     const { name, description } = request.body;
+    const requesterUserId = request.userId!;
 
     try {
-      const project = await this.updateProjectUseCase.execute({ id, name, description });
+      const project = await this.updateProjectUseCase.execute({ id, name, description, requesterUserId });
 
       if (!project) {
         return response.status(404).json({ error: "Project not found" });
@@ -19,6 +20,9 @@ export class UpdateProjectController {
 
       return response.json(project);
     } catch (error: any) {
+      if (error.message === "Only admins can update projects") {
+        return response.status(403).json({ error: error.message });
+      }
       return response.status(400).json({ error: error.message });
     }
   }
