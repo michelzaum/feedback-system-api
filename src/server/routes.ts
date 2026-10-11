@@ -13,7 +13,6 @@ import { makeDeleteOrganizationController } from '../modules/organization/factor
 
 import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
-import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
 import { makeGetCurrentUserController } from '../modules/user/factories/makeGetCurrentUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
 
@@ -88,7 +87,6 @@ app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationContr
 
 // Users
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
-app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
 app.get('/me', async (req, res) => makeGetCurrentUserController().handle(req, res));
 app.get('/me/organizations', async (req, res) => makeFindMyOrganizationsController().handle(req, res));
 app.get('/me/members', async (req, res) => makeFindMyOrganizationsMembersController().handle(req, res));
