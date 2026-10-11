@@ -13,8 +13,15 @@ export class CreateOrganizationController {
       return response.status(401).json({ message: 'Not authenticated' });
     }
 
-    const organization = await this.createOrganizationUseCase.execute({ name, userId });
+    try {
+      const organization = await this.createOrganizationUseCase.execute({ name, userId });
 
-    response.json(organization);
+      response.json(organization);
+    } catch (error: any) {
+      if (error.message === "Organization slug already exists") {
+        return response.status(409).json({ error: error.message });
+      }
+      return response.status(400).json({ error: error.message });
+    }
   }
 }

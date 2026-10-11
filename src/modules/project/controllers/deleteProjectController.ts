@@ -7,13 +7,17 @@ export class DeleteProjectController {
 
   async handle(request: Request<any, any, IDeleteProjectRequest>, response: Response) {
     const { id } = request.params;
+    const requesterUserId = request.userId!;
 
     try {
-      await this.deleteProjectUseCase.execute({ id });
+      await this.deleteProjectUseCase.execute({ id, requesterUserId });
       return response.status(204).send();
     } catch (error: any) {
       if (error.message === "Project not found") {
         return response.status(404).json({ error: error.message });
+      }
+      if (error.message === "Only admins can delete projects") {
+        return response.status(403).json({ error: error.message });
       }
       return response.status(400).json({ error: error.message });
     }

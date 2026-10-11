@@ -3,13 +3,28 @@ import type { IMembershipRepository } from "../repositories/interfaces/IMembersh
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IUserPreview } from "../interfaces/IUserPreview";
 
-export class FindUserByEmailForOrganizationUseCase implements IUseCase<{ organizationId: string; email: string }, IUserPreview> {
+interface IFindUserByEmailInput {
+  organizationId: string;
+  email: string;
+  requesterUserId: string;
+}
+
+export class FindUserByEmailForOrganizationUseCase implements IUseCase<IFindUserByEmailInput, IUserPreview> {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly membershipRepository: IMembershipRepository,
   ) { }
 
-  async execute(data: { organizationId: string; email: string }): Promise<IUserPreview> {
+  async execute(data: IFindUserByEmailInput): Promise<IUserPreview> {
+    const requesterMembership = await this.membershipRepository.findMembership(
+      data.organizationId,
+      data.requesterUserId,
+    );
+
+    if (!requesterMembership || requesterMembership.role !== "ADMIN") {
+      throw new Error("Only admins can search users for organization");
+    }
+
     const user = await this.userRepository.findByEmail(data.email);
 
     if (!user) {

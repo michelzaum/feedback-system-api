@@ -1,32 +1,32 @@
 import type { IOrganizationRepository } from "../repositories/interfaces/IOrganizationRepository";
-import type { IMembershipRepository } from "../../membership/repositories/interfaces/IMembershipRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
-import type { ICreateMembership } from "../../membership/interfaces/ICreateMembership";
 
 export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, IOrganization> {
   constructor(
     private readonly organizationRepository: IOrganizationRepository,
-    private readonly membershipRepository: IMembershipRepository,
   ) { }
 
   async execute(data: ICreateOrganization): Promise<IOrganization> {
-    const newOrganization = {
-      ...data,
-      slug: data.name.toLowerCase().replace(/ /g, "-"),
+    const slug = data.name.toLowerCase().replace(/ /g, "-");
+
+    const slugExists = await this.organizationRepository.findBySlug(slug);
+
+    if (slugExists) {
+      throw new Error("Organization slug already exists");
     }
 
-    const organization = await this.organizationRepository.create(newOrganization);
+    const newOrganization = {
+      name: data.name,
+      slug,
+    }
 
-    const membership: ICreateMembership = {
-      organizationId: organization.id,
+    const membership = {
       userId: data.userId,
-      role: 'ADMIN',
+      role: 'ADMIN' as const,
     };
 
-    await this.membershipRepository.create(membership);
-
-    return organization;
+    return await this.organizationRepository.create(newOrganization, membership);
   }
 }

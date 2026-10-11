@@ -7,14 +7,18 @@ export class DeleteMembershipController {
 
   async handle(request: Request<any, any, IDeleteMembershipRequestParams>, response: Response) {
     const { organizationId, userId } = request.params;
+    const requesterUserId = request.userId!;
 
     try {
-      await this.deleteMembershipUseCase.execute({ organizationId, userId });
+      await this.deleteMembershipUseCase.execute({ organizationId, userId, requesterUserId });
 
       return response.status(204).send();
     } catch (error: any) {
       if (error.message === "Membership not found") {
         return response.status(404).json({ error: error.message });
+      }
+      if (error.message === "Only admins can delete memberships") {
+        return response.status(403).json({ error: error.message });
       }
       return response.status(400).json({ error: error.message });
     }
