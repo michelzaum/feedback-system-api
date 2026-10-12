@@ -4,6 +4,6 @@ export class SignOutController {
   constructor() { }
 
   async handle(request: Request, response: Response) {
-    response.clearCookie('token').json({ message: 'sign-out successful' });
+    response.clearCookie('token').clearCookie('refreshToken').json({ message: 'sign-out successful' });
   }
 }
