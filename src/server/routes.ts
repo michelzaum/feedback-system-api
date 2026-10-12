@@ -42,6 +42,7 @@ import { makeFindFeedbacksByOrganizationController } from '../modules/feedback/f
 
 import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
 import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
+import { makeRefreshTokenController } from '../modules/refresh-token/factories/makeRefreshTokenController';
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use(cookieParser());
 // Public routes
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
+app.post('/refresh-token', async (req, res) => makeRefreshTokenController().handle(req, res));
 app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
 
 app.post('/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));

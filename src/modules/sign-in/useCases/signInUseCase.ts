@@ -1,13 +1,20 @@
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { IUserRepository } from "../../user/repositories/interfaces/IUserRepository";
+import type { IRefreshTokenRepository } from "../../refresh-token/repositories/interfaces/IRefreshTokenRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ISignInRequest } from "../interfaces/ISignInRequest";
+import type { ISignInResponse } from "../interfaces/ISignInResponse";
 
-export class SignInUseCase implements IUseCase<ISignInRequest, string> {
-  constructor(private readonly userRepository: IUserRepository) { }
+const EXPIRATION_TIME_IN_DAYS = 7;
 
-  async execute(data: ISignInRequest): Promise<string> {
+export class SignInUseCase implements IUseCase<ISignInRequest, ISignInResponse> {
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly refreshTokenRepository: IRefreshTokenRepository,
+  ) { }
+
+  async execute(data: ISignInRequest): Promise<ISignInResponse> {
     const { email, password } = data;
 
     const user = await this.userRepository.findByEmail(email);
@@ -26,8 +33,13 @@ export class SignInUseCase implements IUseCase<ISignInRequest, string> {
       throw new Error("Invalid credentials");
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
+    const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
-    return token;
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + EXPIRATION_TIME_IN_DAYS);
+
+    const refreshToken = await this.refreshTokenRepository.create({ userId: user.id, expiresAt });
+
+    return { accessToken, refreshTokenId: refreshToken.id };
   }
 }

@@ -8,8 +8,11 @@ export class SignInController {
   async handle(request: Request<any, any, ISignInRequest>, response: Response) {
     const { email, password } = request.body;
 
-    const token = await this.signInUseCase.execute({ email, password });
+    const { accessToken, refreshTokenId } = await this.signInUseCase.execute({ email, password });
 
-    response.status(200).cookie('token', token, { httpOnly: true }).json({ message: 'sign-in successful' });
+    response.status(200)
+      .cookie('token', accessToken, { httpOnly: true })
+      .cookie('refreshToken', refreshTokenId, { httpOnly: true })
+      .json({ message: 'sign-in successful' });
   }
 }
