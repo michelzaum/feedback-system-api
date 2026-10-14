@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server/routes.ts",
+    "start": "tsx src/server/routes.ts",
+    "build": "prisma generate && tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
@@ -24,6 +26,8 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
+    "@neon/config": "^1.9.1",
+    "@neon/env": "^1.6.1",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@types/bcrypt": "^6.0.0",

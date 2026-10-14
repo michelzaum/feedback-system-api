@@ -3,12 +3,24 @@
 import "dotenv/config";
 import { defineConfig, env } from "prisma/config";
 
+// Neon provides two connection strings: DATABASE_URL (pooled, through
+// PgBouncer) and DATABASE_URL_UNPOOLED (direct). Application traffic uses the
+// pooled URL; migrations need the direct URL because PgBouncer transaction
+// mode does not support session-level operations.
+// Prisma 7's prisma.config.ts has no `directUrl` key, so pick per command:
+// `prisma migrate` and `prisma db` run with the direct URL, everything else
+// (application, `prisma validate`, `prisma generate`) uses the pooled URL.
+const command = process.argv[2];
+const usesDirectConnection = command === "migrate" || command === "db";
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: usesDirectConnection
+      ? env("DATABASE_URL_UNPOOLED")
+      : env("DATABASE_URL"),
   },
 });
