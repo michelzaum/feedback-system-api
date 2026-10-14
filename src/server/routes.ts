@@ -44,6 +44,8 @@ import { makeSignInController } from '../modules/sign-in/factories/makeSignInCon
 import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
 import { makeRefreshTokenController } from '../modules/refresh-token/factories/makeRefreshTokenController';
 
+import { makeHealthCheckController } from '../modules/health/factories/makeHealthCheckController';
+
 const app = express();
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
@@ -51,6 +53,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Public routes
+app.get('/health', async (req, res) => makeHealthCheckController().handle(req, res));
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 app.post('/refresh-token', async (req, res) => makeRefreshTokenController().handle(req, res));
