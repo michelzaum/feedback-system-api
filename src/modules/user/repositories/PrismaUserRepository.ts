@@ -15,6 +15,7 @@ export class PrismaUserRepository implements IUserRepository {
         id: true,
         name: true,
         email: true,
+        createdAt: true,
       },
     });
   }
@@ -48,6 +49,7 @@ export class PrismaUserRepository implements IUserRepository {
         id: true,
         name: true,
         email: true,
+        createdAt: true,
       },
     });
   }
@@ -65,6 +67,20 @@ export class PrismaUserRepository implements IUserRepository {
         id: true,
         name: true,
         email: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  async findByEmail(email: string): Promise<IUser | null> {
+    return await prisma.users.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password_hash: true,
+        createdAt: true,
       },
     });
   }

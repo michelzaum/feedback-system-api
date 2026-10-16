@@ -11,6 +11,7 @@ export class InMemoryProjectRepository implements IProjectRepository {
       name: data.name,
       description: data.description,
       slug: data.slug,
+      url: data.url,
       createdAt: new Date(),
       updatedAt: new Date(),
       archivedAt: null,
@@ -27,6 +28,7 @@ export class InMemoryProjectRepository implements IProjectRepository {
         item.name = data.name ?? item.name;
         item.description = data.description ?? item.description;
         item.slug = data.slug ?? item.slug;
+        item.url = data.url ?? item.url;
         item.updatedAt = new Date();
         return Promise.resolve(item);
       }
@@ -45,8 +47,29 @@ export class InMemoryProjectRepository implements IProjectRepository {
     return Promise.resolve(project);
   }
 
+  findOrganizationSlug(organizationId: string): Promise<string> {
+    return Promise.resolve(organizationId);
+  }
+
+  findBySlug(organizationId: string, slug: string): Promise<IProject | null> {
+    const project = this.projects.find((project) => project.organizationId === organizationId && project.slug === slug) || null;
+    return Promise.resolve(project);
+  }
+
+  findBySlugs(organizationSlug: string, projectSlug: string): Promise<IProject | null> {
+    const project = this.projects.find((project) => project.organizationId === organizationSlug && project.slug === projectSlug) || null;
+    return Promise.resolve(project);
+  }
+
   findProjectsByOrganizationId(organizationId: string): Promise<IProject[]> {
     const projects = this.projects.filter((project) => project.organizationId === organizationId);
+    return Promise.resolve(projects);
+  }
+
+  findProjectsByUserId(userId: string): Promise<IProject[]> {
+    const projects = this.projects.filter((project) => {
+      return project.organizationId === userId;
+    });
     return Promise.resolve(projects);
   }
 }

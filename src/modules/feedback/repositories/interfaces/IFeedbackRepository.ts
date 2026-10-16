@@ -7,4 +7,5 @@ export interface IFeedbackRepository {
   update(id: string, data: IUpdateFeedbackRepositoryInput): Promise<IFeedback | undefined>;
   findById(id: string): Promise<IFeedback | null>;
   findManyByProjectId(projectId: string): Promise<IFeedback[]>;
+  findManyByOrganizationId(organizationId: string): Promise<IFeedback[]>;
 }

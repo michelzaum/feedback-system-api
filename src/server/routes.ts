@@ -1,6 +1,10 @@
 import 'dotenv/config';
 
 import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+import { authMiddleware } from '../middleware/auth';
 
 import { makeCreateOrganizationController } from '../modules/organization/factories/makeCreateOrganizationController';
 import { makeUpdateOrganizationController } from '../modules/organization/factories/makeUpdateOrganizationController';
@@ -9,7 +13,7 @@ import { makeDeleteOrganizationController } from '../modules/organization/factor
 
 import { makeCreateUserController } from '../modules/user/factories/makeCreateUserController';
 import { makeUpdateUserController } from '../modules/user/factories/makeUpdateUserController';
-import { makeGetUserController } from '../modules/user/factories/makeGetUserController';
+import { makeGetCurrentUserController } from '../modules/user/factories/makeGetCurrentUserController';
 import { makeDeleteUserController } from '../modules/user/factories/makeDeleteUserController';
 
 import { makeCreateMembershipController } from '../modules/membership/factories/makeCreateMembershipController';
@@ -17,48 +21,103 @@ import { makeFindMembershipController } from '../modules/membership/factories/ma
 import { makeUpdateMembershipController } from '../modules/membership/factories/makeUpdateMembershipController';
 import { makeDeleteMembershipController } from '../modules/membership/factories/makeDeleteMembershipController';
 import { makeGetOrganizationMembersController } from '../modules/membership/factories/makeGetOrganizationMembersController';
+import { makeFindMyOrganizationsController } from '../modules/membership/factories/makeFindMyOrganizationsController';
+import { makeFindMyOrganizationsMembersController } from '../modules/membership/factories/makeFindMyOrganizationsMembersController';
+import { makeFindUserByEmailForOrganizationController } from '../modules/membership/factories/makeFindUserByEmailForOrganizationController';
 
 import { makeCreateProjectController } from '../modules/project/factories/makeCreateProjectController';
 import { makeUpdateProjectController } from '../modules/project/factories/makeUpdateProjectController';
 import { makeFindProjectByIdController } from '../modules/project/factories/makeFindProjectByIdController';
+import { makeFindProjectBySlugController } from '../modules/project/factories/makeFindProjectBySlugController';
+import { makeFindProjectBySlugsController } from '../modules/project/factories/makeFindProjectBySlugsController';
 import { makeFindProjectByOrganizationController } from '../modules/project/factories/makeFindProjectByOrganizationController';
 import { makeDeleteProjectController } from '../modules/project/factories/makeDeleteProjectController';
+import { makeFindMyProjectsController } from '../modules/project/factories/makeFindMyProjectsController';
 
 import { makeCreateFeedbackController } from '../modules/feedback/factories/makeCreateFeedbackController';
 import { makeGetFeedbackController } from '../modules/feedback/factories/makeGetFeedbackController';
 import { makeGetProjectFeedbacksController } from '../modules/feedback/factories/makeGetProjectFeedbacksController';
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
+import { makeFindFeedbacksByOrganizationController } from '../modules/feedback/factories/makeFindFeedbacksByOrganizationController';
+
+import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
+import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
+import { makeRefreshTokenController } from '../modules/refresh-token/factories/makeRefreshTokenController';
+
+import { makeHealthCheckController } from '../modules/health/factories/makeHealthCheckController';
 
 const app = express();
 
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
+// Public routes
+app.get('/health', async (req, res) => makeHealthCheckController().handle(req, res));
+app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
+app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
+app.post('/refresh-token', async (req, res) => makeRefreshTokenController().handle(req, res));
+app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
+
+app.post('/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+
+// CODE BELOW IS A TEMPORARY FIX TO AVOID A BUG, because the route /organizations/:organizationId/projects/:id has the same
+// shape of /organizations/:organizationSlug/projects/:projectSlug, so the public route take precedence and return no data
+// when try to find project by id (UUID format). We need to find a better solution to solve this.
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Handles both public slug URLs (/my-company/my-project) and id URLs
+// (/organizations/<uuid>/projects/<uuid>). Id URLs require auth + membership.
+app.get('/organizations/:organizationSlug/projects/:projectSlug', (req, res, next) => {
+  if (!UUID_PATTERN.test(req.params.projectSlug)) {
+    return next();
+  }
+  (req.params as Record<string, string>).id = req.params.projectSlug;
+  authMiddleware(req, res, next);
+}, async (req, res) => {
+  if (UUID_PATTERN.test(req.params.projectSlug)) {
+    return makeFindProjectByIdController().handle(req, res);
+  }
+  return makeFindProjectBySlugsController().handle(req, res);
+});
+
+app.use(authMiddleware);
+
+// Organizations
 app.post('/organizations', async (req, res) => makeCreateOrganizationController().handle(req, res));
 app.put('/organizations/:id', async (req, res) => makeUpdateOrganizationController().handle(req, res));
 app.get('/organizations/:id', async (req, res) => makeFindOrganizationByIdController().handle(req, res));
 app.delete('/organizations/:id', async (req, res) => makeDeleteOrganizationController().handle(req, res));
 
-app.post('/users', async (req, res) => makeCreateUserController().handle(req, res));
+// Users
 app.patch('/users/:id', async (req, res) => makeUpdateUserController().handle(req, res));
-app.get('/users/:id', async (req, res) => makeGetUserController().handle(req, res));
+app.get('/me', async (req, res) => makeGetCurrentUserController().handle(req, res));
+app.get('/me/organizations', async (req, res) => makeFindMyOrganizationsController().handle(req, res));
+app.get('/me/members', async (req, res) => makeFindMyOrganizationsMembersController().handle(req, res));
 app.delete('/users/:id', async (req, res) => makeDeleteUserController().handle(req, res));
 
+// Memberships
 app.post('/organizations/:organizationId/members', async (req, res) => makeCreateMembershipController().handle(req, res));
+app.get('/organizations/:organizationId/members/find-by-email/:email', async (req, res) => makeFindUserByEmailForOrganizationController().handle(req, res));
 app.get('/organizations/:organizationId/members/:userId', async (req, res) => makeFindMembershipController().handle(req, res));
 app.patch('/organizations/:organizationId/members/:userId', async (req, res) => makeUpdateMembershipController().handle(req, res));
 app.delete('/organizations/:organizationId/members/:userId', async (req, res) => makeDeleteMembershipController().handle(req, res));
 app.get('/organizations/:organizationId/members', async (req, res) => makeGetOrganizationMembersController().handle(req, res));
 
+// Projects
 app.post('/organizations/:organizationId/projects', async (req, res) => makeCreateProjectController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:id', async (req, res) => makeUpdateProjectController().handle(req, res));
-app.get('/organizations/:organizationId/projects/:id', async (req, res) => makeFindProjectByIdController().handle(req, res));
+app.get('/organizations/:organizationId/projects/by-slug/:slug', async (req, res) => makeFindProjectBySlugController().handle(req, res));
 app.get('/organizations/:organizationId/projects', async (req, res) => makeFindProjectByOrganizationController().handle(req, res));
+app.get('/me/projects', async (req, res) => makeFindMyProjectsController().handle(req, res));
 app.delete('/organizations/:organizationId/projects/:id', async (req, res) => makeDeleteProjectController().handle(req, res));
 
-app.post('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeCreateFeedbackController().handle(req, res));
+// Feedbacks
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
+app.get('/organizations/:organizationId/feedbacks', async (req, res) => makeFindFeedbacksByOrganizationController().handle(req, res));
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');

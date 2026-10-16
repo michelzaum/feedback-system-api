@@ -7,9 +7,21 @@ export class CreateOrganizationController {
 
   async handle(request: Request<any, any, ICreateOrganizationRequest>, response: Response) {
     const { name } = request.body;
+    const userId = request.userId
 
-    const organization = await this.createOrganizationUseCase.execute({ name });
+    if (!userId) {
+      return response.status(401).json({ message: 'Not authenticated' });
+    }
 
-    response.json(organization);
+    try {
+      const organization = await this.createOrganizationUseCase.execute({ name, userId });
+
+      response.json(organization);
+    } catch (error: any) {
+      if (error.message === "Organization slug already exists") {
+        return response.status(409).json({ error: error.message });
+      }
+      return response.status(400).json({ error: error.message });
+    }
   }
 }

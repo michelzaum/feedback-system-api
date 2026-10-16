@@ -10,6 +10,7 @@ export class PrismaProjectRepository implements IProjectRepository {
         name: data.name,
         description: data.description,
         slug: data.slug,
+        url: data.url,
         organizationId: data.organizationId,
       },
     });
@@ -19,7 +20,7 @@ export class PrismaProjectRepository implements IProjectRepository {
     id: string,
     data: Partial<ICreateProjectRepositoryInput>,
   ): Promise<IProject | undefined> {
-    const updateData: { name?: string; description?: string; slug?: string } = {};
+    const updateData: { name?: string; description?: string; slug?: string; url?: string } = {};
 
     if (data.name !== undefined) {
       updateData.name = data.name;
@@ -31,6 +32,9 @@ export class PrismaProjectRepository implements IProjectRepository {
 
     if (data.slug !== undefined) {
       updateData.slug = data.slug;
+      if (data.url !== undefined) {
+        updateData.url = data.url;
+      }
     }
 
     return await prisma.projects.update({
@@ -51,9 +55,48 @@ export class PrismaProjectRepository implements IProjectRepository {
     });
   }
 
+  async findOrganizationSlug(organizationId: string): Promise<string> {
+    const organization = await prisma.organizations.findUniqueOrThrow({
+      where: { id: organizationId },
+      select: { slug: true },
+    });
+    return organization.slug;
+  }
+
+  async findBySlug(organizationId: string, slug: string): Promise<IProject | null> {
+    return await prisma.projects.findFirst({
+      where: { organizationId, slug },
+    });
+  }
+
+  async findBySlugs(organizationSlug: string, projectSlug: string): Promise<IProject | null> {
+    return await prisma.projects.findFirst({
+      where: {
+        slug: projectSlug,
+        organization: {
+          slug: organizationSlug,
+        },
+      },
+    });
+  }
+
   async findProjectsByOrganizationId(organizationId: string): Promise<IProject[]> {
     return await prisma.projects.findMany({
       where: { organizationId },
+    });
+  }
+
+  async findProjectsByUserId(userId: string): Promise<IProject[]> {
+    return await prisma.projects.findMany({
+      where: {
+        organization: {
+          memberships: {
+            some: {
+              userId,
+            },
+          },
+        },
+      },
     });
   }
 }

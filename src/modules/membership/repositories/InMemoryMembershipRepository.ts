@@ -2,6 +2,8 @@ import type { IMembership } from "../interfaces/IMembership";
 import type { ICreateMembershipRepositoryInput } from "./interfaces/ICreateMembershipRepository";
 import type { IMembershipRepository } from "./interfaces/IMembershipRepository";
 import type { IMember } from "../interfaces/IMember";
+import type { IMyOrganization } from "../interfaces/IMyOrganization";
+import type { IMembersFromOrganization } from "../interfaces/IMembersFromOrganization";
 
 export class InMemoryMembershipRepository implements IMembershipRepository {
   private memberships: IMembership[] = [];
@@ -64,5 +66,38 @@ export class InMemoryMembershipRepository implements IMembershipRepository {
       email: "",
       role: m.role,
     }));
+  }
+
+  async findManyByUserId(userId: string): Promise<IMyOrganization[]> {
+    const memberships = this.memberships.filter((m) => m.userId === userId);
+    // In-memory doesn't store organization data, return minimal info
+    return memberships.map((m) => ({
+      id: "",
+      name: "",
+      slug: "",
+      role: m.role,
+    }));
+  }
+
+  async findManyMembersByOrganizationIds(organizationIds: string[]): Promise<IMembersFromOrganization[]> {
+    const memberships = this.memberships.filter((m) => organizationIds.includes(m.organizationId));
+    const grouped = new Map<string, IMembersFromOrganization>();
+
+    for (const m of memberships) {
+      const userId = m.userId;
+      const existing = grouped.get(userId);
+      if (existing) {
+        existing.organizations.push({ id: m.organizationId, name: m.organizationId, role: m.role });
+      } else {
+        grouped.set(userId, {
+          id: m.userId,
+          name: "",
+          email: "",
+          organizations: [{ id: m.organizationId, name: m.organizationId, role: m.role }],
+        });
+      }
+    }
+
+    return Array.from(grouped.values());
   }
 }

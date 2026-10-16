@@ -1,15 +1,31 @@
 import { prisma } from "../../../lib/prisma";
 import type { IOrganization } from "../interfaces/IOrganization";
 import type { ICreateOrganizationRepositoryInput } from "./interfaces/ICreateOrganizationRepository";
+import type { ICreateMembershipRepositoryInput } from "../../membership/repositories/interfaces/ICreateMembershipRepository";
 import type { IOrganizationRepository } from "./interfaces/IOrganizationRepository";
 
 export class PrismaOrganizationRepository implements IOrganizationRepository {
-  async create(data: ICreateOrganizationRepositoryInput): Promise<IOrganization> {
-    return prisma.organizations.create({
-      data: {
-        name: data.name,
-        slug: data.slug,
-      },
+  async create(
+    organization: ICreateOrganizationRepositoryInput,
+    membership: Omit<ICreateMembershipRepositoryInput, "organizationId">,
+  ): Promise<IOrganization> {
+    return prisma.$transaction(async (tx) => {
+      const createdOrganization = await tx.organizations.create({
+        data: {
+          name: organization.name,
+          slug: organization.slug,
+        },
+      });
+
+      await tx.memberships.create({
+        data: {
+          organizationId: createdOrganization.id,
+          userId: membership.userId,
+          role: membership.role,
+        },
+      });
+
+      return createdOrganization;
     });
   }
 
@@ -42,6 +58,12 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
   async findById(id: string): Promise<IOrganization | null> {
     return await prisma.organizations.findUnique({
       where: { id },
+    });
+  }
+
+  async findBySlug(slug: string): Promise<IOrganization | null> {
+    return await prisma.organizations.findUnique({
+      where: { slug },
     });
   }
 }

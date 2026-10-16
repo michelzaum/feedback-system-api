@@ -7,11 +7,11 @@ export class CreateFeedbackController {
   constructor(private readonly createFeedbackUseCase: CreateFeedbackUseCase) { }
 
   async handle(request: Request<ICreateFeedbackRequestParams, any, ICreateFeedbackRequestBody>, response: Response) {
-    const { organizationId, projectId } = request.params;
-    const { title, description, status } = request.body;
+    const { projectId } = request.params;
+    const { title, description } = request.body;
 
     try {
-      const feedback = await this.createFeedbackUseCase.execute({ title, description, projectId, organizationId, status });
+      const feedback = await this.createFeedbackUseCase.execute({ title, description, projectId });
       return response.status(201).json(feedback);
     } catch (error: any) {
       return response.status(400).json({ error: error.message });

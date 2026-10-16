@@ -7,6 +7,19 @@ export class UpdateMembershipUseCase implements IUseCase<IUpdateMembership, IMem
   constructor(private readonly membershipRepository: IMembershipRepository) { }
 
   async execute(data: IUpdateMembership): Promise<IMembership | undefined> {
+    if (data.requesterUserId === data.userId) {
+      throw new Error("Cannot update own membership");
+    }
+
+    const requesterMembership = await this.membershipRepository.findMembership(
+      data.organizationId,
+      data.requesterUserId,
+    );
+
+    if (!requesterMembership || requesterMembership.role !== "ADMIN") {
+      throw new Error("Only admins can update memberships");
+    }
+
     const membershipExists = await this.membershipRepository.findMembership(
       data.organizationId,
       data.userId,
