@@ -4,12 +4,17 @@
 const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 const SEVEN_DAYS_IN_MILLISECONDS = 7 * ONE_DAY_IN_MILLISECONDS;
 
+// sameSite 'none' + secure true so cookies work cross-site (frontend on another domain over HTTPS)
 export const accessTokenCookieOptions = {
   httpOnly: true,
   maxAge: ONE_DAY_IN_MILLISECONDS,
+  sameSite: 'none',
+  secure: true,
 } as const;
 
 export const refreshTokenCookieOptions = {
   httpOnly: true,
   maxAge: SEVEN_DAYS_IN_MILLISECONDS,
+  sameSite: 'none',
+  secure: true,
 } as const;
