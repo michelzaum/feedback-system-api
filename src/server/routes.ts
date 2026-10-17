@@ -52,7 +52,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://feedback-system-web-k2oi.onrender.',
+  'https://feedback-system-web-k2oi.onrender.com',
 ];
 
 app.use(cors({
