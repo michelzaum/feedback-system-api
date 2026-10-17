@@ -44,7 +44,9 @@ import { makeSignInController } from '../modules/sign-in/factories/makeSignInCon
 import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
 import { makeRefreshTokenController } from '../modules/refresh-token/factories/makeRefreshTokenController';
 
-import { makeHealthCheckController } from '../modules/health/factories/makeHealthCheckController';
+// import { makeHealthCheckController } from '../modules/health/factories/makeHealthCheckController';
+
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
@@ -53,7 +55,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Public routes
-app.get('/health', async (req, res) => makeHealthCheckController().handle(req, res));
+app.get('/health', async (req, res) => res.sendStatus(200));
 app.post('/sign-in', async (req, res) => makeSignInController().handle(req, res));
 app.post('/sign-out', async (req, res) => makeSignOutController().handle(req, res));
 app.post('/refresh-token', async (req, res) => makeRefreshTokenController().handle(req, res));
@@ -119,6 +121,6 @@ app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (r
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/feedbacks', async (req, res) => makeFindFeedbacksByOrganizationController().handle(req, res));
 
-app.listen(3001, () => {
-  console.log('Server is running on port 3001');
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
