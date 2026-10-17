@@ -52,7 +52,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://feedback-system-api-8xnt.onrender.com',
+  process.env.API_URL || 'http://localhost:5173',
 ];
 
 app.use(cors({
