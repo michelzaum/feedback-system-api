@@ -2,6 +2,9 @@ import type { ICreateUserRepositoryInput } from "./interfaces/ICreateUserReposit
 import type { IUser } from "../interfaces/IUser";
 import type { IUserRepository } from "./interfaces/IUserRepository";
 
+// In-memory variant has no organization, membership or refresh-token data,
+// so deleteAccount can only remove the user record itself.
+
 export class InMemoryUserRepository implements IUserRepository {
   private users: IUser[] = [];
 
@@ -36,6 +39,11 @@ export class InMemoryUserRepository implements IUserRepository {
 
   delete(id: string): Promise<void> {
     this.users = this.users.filter((item) => item.id !== id);
+    return Promise.resolve();
+  }
+
+  deleteAccount(userId: string): Promise<void> {
+    this.users = this.users.filter((item) => item.id !== userId);
     return Promise.resolve();
   }
 
