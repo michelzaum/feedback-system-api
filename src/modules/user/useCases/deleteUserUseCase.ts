@@ -2,43 +2,9 @@ import type { IMembershipRepository } from "../../membership/repositories/interf
 import type { IUserRepository } from "../repositories/interfaces/IUserRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IDeleteUser } from "../interfaces/IDeleteUser";
-import type { IMembersFromOrganization } from "../../membership/interfaces/IMembersFromOrganization";
-import type { IMyOrganization } from "../../membership/interfaces/IMyOrganization";
 import { AccountDeletionBlockedError } from "../errors/accountDeletionErrors";
-import {
-  planAccountDeletion,
-  type IAccountMembershipRow,
-} from "../utils/accountOrganizations";
-
-function toMembershipRows(
-  userId: string,
-  memberships: IMyOrganization[],
-  organizationMembers: IMembersFromOrganization[],
-): IAccountMembershipRow[] {
-  const rows: IAccountMembershipRow[] = [];
-
-  for (const membership of memberships) {
-    rows.push({
-      organizationId: membership.id,
-      organizationName: membership.name,
-      userId,
-      role: membership.role,
-    });
-  }
-
-  for (const member of organizationMembers) {
-    for (const organization of member.organizations) {
-      rows.push({
-        organizationId: organization.id,
-        organizationName: organization.name,
-        userId: member.id,
-        role: organization.role,
-      });
-    }
-  }
-
-  return rows;
-}
+import { planAccountDeletion } from "../utils/accountOrganizations";
+import { toMembershipRows } from "../utils/membershipRows";
 
 export class DeleteUserUseCase implements IUseCase<IDeleteUser, void> {
   constructor(
