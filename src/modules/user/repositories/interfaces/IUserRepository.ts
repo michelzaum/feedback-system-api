@@ -8,6 +8,7 @@ export interface IUserRepository {
     data: Partial<ICreateUserRepositoryInput>,
   ): Promise<IUser | undefined>;
   delete(id: string): Promise<void>;
+  deleteAccount(userId: string): Promise<void>;
   findById(id: string): Promise<IUser | null>;
   findByEmail(email: string): Promise<IUser | null>;
 }
