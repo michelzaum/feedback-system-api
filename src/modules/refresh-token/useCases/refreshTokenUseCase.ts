@@ -2,13 +2,16 @@ import jwt from "jsonwebtoken";
 import type { IRefreshTokenResponse } from "../interfaces/IRefreshTokenResponse";
 import type { IRefreshTokenRepository } from "../repositories/interfaces/IRefreshTokenRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
 const EXPIRATION_TIME_IN_DAYS = 7;
 
-export class RefreshTokenUseCase implements IUseCase<string, IRefreshTokenResponse> {
-  constructor(private readonly refreshTokenRepository: IRefreshTokenRepository) { }
+export class RefreshTokenUseCase extends BaseUseCase<string, IRefreshTokenResponse> {
+  constructor(private readonly refreshTokenRepository: IRefreshTokenRepository) {
+    super();
+  }
 
-  async execute(refreshTokenId: string): Promise<IRefreshTokenResponse> {
+  protected async executeInternal(refreshTokenId: string): Promise<IRefreshTokenResponse> {
     const refreshToken = await this.refreshTokenRepository.findById(refreshTokenId);
 
     if (!refreshToken) {

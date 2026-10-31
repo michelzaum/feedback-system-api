@@ -2,11 +2,14 @@ import type { IFeedbackRepository } from "../repositories/interfaces/IFeedbackRe
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IGetFeedback } from "../interfaces/IGetFeedback";
 import type { IFeedback } from "../interfaces/IFeedback";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class GetFeedbackUseCase implements IUseCase<IGetFeedback, IFeedback | null> {
-  constructor(private readonly feedbackRepository: IFeedbackRepository) { }
+export class GetFeedbackUseCase extends BaseUseCase<IGetFeedback, IFeedback | null> {
+  constructor(private readonly feedbackRepository: IFeedbackRepository) {
+    super();
+  }
 
-  async execute(data: IGetFeedback): Promise<IFeedback | null> {
+  protected async executeInternal(data: IGetFeedback): Promise<IFeedback | null> {
     return await this.feedbackRepository.findById(data.id);
   }
 }

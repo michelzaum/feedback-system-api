@@ -2,11 +2,14 @@ import type { IFeedbackRepository } from "../repositories/interfaces/IFeedbackRe
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IGetFeedbacksByProject } from "../interfaces/IGetFeedbacksByProject";
 import type { IFeedback } from "../interfaces/IFeedback";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class GetProjectFeedbacksUseCase implements IUseCase<IGetFeedbacksByProject, IFeedback[]> {
-  constructor(private readonly feedbackRepository: IFeedbackRepository) { }
+export class GetProjectFeedbacksUseCase extends BaseUseCase<IGetFeedbacksByProject, IFeedback[]> {
+  constructor(private readonly feedbackRepository: IFeedbackRepository) {
+    super();
+  }
 
-  async execute(data: IGetFeedbacksByProject): Promise<IFeedback[]> {
+  protected async executeInternal(data: IGetFeedbacksByProject): Promise<IFeedback[]> {
     return await this.feedbackRepository.findManyByProjectId(data.projectId);
   }
 }

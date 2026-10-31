@@ -2,13 +2,14 @@ import type { IOrganizationRepository } from "../repositories/interfaces/IOrgani
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateOrganization } from "../interfaces/ICreateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class CreateOrganizationUseCase implements IUseCase<ICreateOrganization, IOrganization> {
-  constructor(
-    private readonly organizationRepository: IOrganizationRepository,
-  ) { }
+export class CreateOrganizationUseCase extends BaseUseCase<ICreateOrganization, IOrganization> {
+  constructor(private readonly organizationRepository: IOrganizationRepository) {
+    super();
+  }
 
-  async execute(data: ICreateOrganization): Promise<IOrganization> {
+  protected async executeInternal(data: ICreateOrganization): Promise<IOrganization> {
     const slug = data.name.toLowerCase().replace(/ /g, "-");
 
     const slugExists = await this.organizationRepository.findBySlug(slug);

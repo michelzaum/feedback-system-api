@@ -1,12 +1,15 @@
-import type { IFeedback } from "../interfaces/IFeedback";
-import type { ICreateFeedback } from "../interfaces/ICreateFeedback";
 import type { IFeedbackRepository } from "../repositories/interfaces/IFeedbackRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
+import type { ICreateFeedback } from "../interfaces/ICreateFeedback";
+import type { IFeedback } from "../interfaces/IFeedback";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class CreateFeedbackUseCase implements IUseCase<ICreateFeedback, IFeedback> {
-  constructor(private readonly feedbackRepository: IFeedbackRepository) { }
+export class CreateFeedbackUseCase extends BaseUseCase<ICreateFeedback, IFeedback> {
+  constructor(private readonly feedbackRepository: IFeedbackRepository) {
+    super();
+  }
 
-  async execute(data: ICreateFeedback): Promise<IFeedback> {
+  protected async executeInternal(data: ICreateFeedback): Promise<IFeedback> {
     return await this.feedbackRepository.create(data);
   }
 }

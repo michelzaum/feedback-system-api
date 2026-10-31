@@ -4,11 +4,14 @@ import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IUpdateUser } from "../interfaces/IUpdateUser";
 import type { IUser } from "../interfaces/IUser";
 import type { ICreateUserRepositoryInput } from "../repositories/interfaces/ICreateUserRepository";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class UpdateUserUseCase implements IUseCase<IUpdateUser, IUser | undefined> {
-  constructor(private readonly userRepository: IUserRepository) { }
+export class UpdateUserUseCase extends BaseUseCase<IUpdateUser, IUser | undefined> {
+  constructor(private readonly userRepository: IUserRepository) {
+    super();
+  }
 
-  async execute(data: IUpdateUser): Promise<IUser | undefined> {
+  protected async executeInternal(data: IUpdateUser): Promise<IUser | undefined> {
     const userExists = await this.userRepository.findById(data.id);
 
     if (!userExists) {
