@@ -7,25 +7,29 @@ import type { IFeedbackRepository } from "./interfaces/IFeedbackRepository";
 
 export class PrismaFeedbackRepository implements IFeedbackRepository {
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
-    const { projectId, status = FeedbackStatus.NEW } = data;
+    return await prisma.$transaction(
+      async (tx) => {
+        const { projectId, status = FeedbackStatus.NEW } = data;
 
-    const project = await prisma.projects.findFirst({
-      where: { id: projectId },
-      select: { id: true },
-    });
+        const project = await tx.projects.findFirst({
+          where: { id: projectId },
+          select: { id: true },
+        });
 
-    if (!project) {
-      throw new Error("Project not found");
-    }
+        if (!project) {
+          throw new Error("Project not found");
+        }
 
-    return await prisma.feedbacks.create({
-      data: {
-        title: data.title,
-        description: data.description,
-        projectId,
-        status,
+        return await tx.feedbacks.create({
+          data: {
+            title: data.title,
+            description: data.description,
+            projectId,
+            status,
+          },
+        });
       },
-    });
+    );
   }
 
   async update(
