@@ -10,6 +10,11 @@ export class FindFeedbacksByOrganizationController {
 
     try {
       const feedbacks = await this.findFeedbacksByOrganizationUseCase.execute({ organizationId });
+
+      if (feedbacks.length === 0) {
+        return response.status(404).json({ error: "No feedbacks found for this organization" });
+      }
+
       return response.json(feedbacks);
     } catch (error: any) {
       return response.status(400).json({ error: error.message });
