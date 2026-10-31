@@ -7,7 +7,7 @@ import type { IFeedbackRepository } from "./interfaces/IFeedbackRepository";
 
 export class PrismaFeedbackRepository implements IFeedbackRepository {
   async create(data: ICreateFeedbackRepositoryInput): Promise<IFeedback> {
-    const { projectId, status = FeedbackStatus.PENDING } = data;
+    const { projectId, status = FeedbackStatus.NEW } = data;
 
     const project = await prisma.projects.findFirst({
       where: { id: projectId },
