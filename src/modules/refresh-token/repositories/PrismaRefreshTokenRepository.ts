@@ -3,8 +3,6 @@ import type { IRefreshToken } from "../interfaces/IRefreshToken";
 import type { ICreateRefreshTokenRepositoryInput } from "./interfaces/ICreateRefreshTokenRepository";
 import type { IRefreshTokenRepository } from "./interfaces/IRefreshTokenRepository";
 
-const EXPIRATION_TIME_IN_DAYS = 7;
-
 export class PrismaRefreshTokenRepository implements IRefreshTokenRepository {
   async create(data: ICreateRefreshTokenRepositoryInput): Promise<IRefreshToken> {
     return prisma.refreshToken.create({
@@ -27,7 +25,7 @@ export class PrismaRefreshTokenRepository implements IRefreshTokenRepository {
     });
   }
 
-  async refreshToken(refreshTokenId: string): Promise<IRefreshToken | null> {
+  async refreshToken(refreshTokenId: string, expirationTimeInDays: number): Promise<IRefreshToken | null> {
     return prisma.$transaction(
       async (tx) => {
         const refreshToken = await tx.refreshToken.findUnique({
@@ -50,7 +48,7 @@ export class PrismaRefreshTokenRepository implements IRefreshTokenRepository {
         });
 
         const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + EXPIRATION_TIME_IN_DAYS);
+        expiresAt.setDate(expiresAt.getDate() + expirationTimeInDays);
 
         const newRefreshToken = await tx.refreshToken.create({
           data: {

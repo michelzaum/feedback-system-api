@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { IRefreshTokenResponse } from "../interfaces/IRefreshTokenResponse";
 import type { IRefreshTokenRepository } from "../repositories/interfaces/IRefreshTokenRepository";
-import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
 const EXPIRATION_TIME_IN_DAYS = 7;
@@ -12,7 +11,7 @@ export class RefreshTokenUseCase extends BaseUseCase<string, IRefreshTokenRespon
   }
 
   protected async executeInternal(refreshTokenId: string): Promise<IRefreshTokenResponse> {
-    const newRefreshToken = await this.refreshTokenRepository.refreshToken(refreshTokenId);
+    const newRefreshToken = await this.refreshTokenRepository.refreshToken(refreshTokenId, EXPIRATION_TIME_IN_DAYS);
 
     if (!newRefreshToken) {
       throw new Error("Invalid or expired refresh token");
