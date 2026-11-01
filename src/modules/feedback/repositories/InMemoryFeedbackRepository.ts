@@ -18,7 +18,7 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
       createdAt: new Date(),
       updatedAt: new Date(),
       projectId: data.projectId,
-      status: data.status ?? FeedbackStatus.PENDING,
+      status: data.status ?? FeedbackStatus.NEW,
     };
 
     this.feedbacks.push(feedback);

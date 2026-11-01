@@ -20,8 +20,45 @@ export class PrismaRefreshTokenRepository implements IRefreshTokenRepository {
   }
 
   async findById(id: string): Promise<IRefreshToken | null> {
-    return await prisma.refreshToken.findUnique({
+    return prisma.refreshToken.findUnique({
       where: { id },
     });
+  }
+
+  async refreshToken(refreshTokenId: string, expirationTimeInDays: number): Promise<IRefreshToken | null> {
+    return prisma.$transaction(
+      async (tx) => {
+        const refreshToken = await tx.refreshToken.findUnique({
+          where: { id: refreshTokenId },
+        });
+
+        if (!refreshToken) {
+          return null;
+        }
+
+        if (refreshToken.expiresAt <= new Date()) {
+          await tx.refreshToken.delete({
+            where: { id: refreshToken.id },
+          });
+          return null;
+        }
+
+        await tx.refreshToken.delete({
+          where: { id: refreshToken.id },
+        });
+
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + expirationTimeInDays);
+
+        const newRefreshToken = await tx.refreshToken.create({
+          data: {
+            userId: refreshToken.userId,
+            expiresAt,
+          },
+        });
+
+        return newRefreshToken;
+      }
+    );
   }
 }

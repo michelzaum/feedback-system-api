@@ -1,9 +1,14 @@
 import { prisma } from '../../../lib/prisma';
 import type { IUseCase } from '../../../shared/interfaces/IUseCase';
 import type { IHealthCheck } from '../interfaces/IHealthCheck';
+import { BaseUseCase } from '../../../shared/useCases/BaseUseCase';
 
-export class HealthCheckUseCase implements IUseCase<void, IHealthCheck> {
-  async execute(): Promise<IHealthCheck> {
+export class HealthCheckUseCase extends BaseUseCase<void, IHealthCheck> {
+  constructor() {
+    super();
+  }
+
+  protected async executeInternal(): Promise<IHealthCheck> {
     const timestamp = new Date().toISOString();
     const uptimeSeconds = Math.floor(process.uptime());
 

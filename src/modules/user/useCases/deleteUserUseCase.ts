@@ -5,14 +5,17 @@ import type { IDeleteUser } from "../interfaces/IDeleteUser";
 import { AccountDeletionBlockedError } from "../errors/accountDeletionErrors";
 import { planAccountDeletion } from "../utils/accountOrganizations";
 import { toMembershipRows } from "../utils/membershipRows";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class DeleteUserUseCase implements IUseCase<IDeleteUser, void> {
+export class DeleteUserUseCase extends BaseUseCase<IDeleteUser, void> {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly membershipRepository: IMembershipRepository,
-  ) { }
+  ) {
+    super();
+  }
 
-  async execute(data: IDeleteUser): Promise<void> {
+  protected async executeInternal(data: IDeleteUser): Promise<void> {
     const user = await this.userRepository.findById(data.userId);
 
     if (!user) {

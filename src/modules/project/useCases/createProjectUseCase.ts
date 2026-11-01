@@ -4,14 +4,17 @@ import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateProject } from "../interfaces/ICreateProject";
 import type { IProject } from "../interfaces/IProject";
 import { createPublicProjectPath } from "./createPublicProjectPath";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class CreateProjectUseCase implements IUseCase<ICreateProject, IProject> {
+export class CreateProjectUseCase extends BaseUseCase<ICreateProject, IProject> {
   constructor(
     private readonly projectRepository: IProjectRepository,
     private readonly membershipRepository: IMembershipRepository,
-  ) { }
+  ) {
+    super();
+  }
 
-  async execute(data: ICreateProject): Promise<IProject> {
+  protected async executeInternal(data: ICreateProject): Promise<IProject> {
     const requesterMembership = await this.membershipRepository.findMembership(
       data.organizationId,
       data.requesterUserId,

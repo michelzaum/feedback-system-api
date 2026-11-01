@@ -4,14 +4,17 @@ import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IUpdateProject } from "../interfaces/IUpdateProject";
 import type { IProject } from "../interfaces/IProject";
 import { createPublicProjectPath } from "./createPublicProjectPath";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class UpdateProjectUseCase implements IUseCase<IUpdateProject, IProject | undefined> {
+export class UpdateProjectUseCase extends BaseUseCase<IUpdateProject, IProject | undefined> {
   constructor(
     private readonly projectRepository: IProjectRepository,
     private readonly membershipRepository: IMembershipRepository,
-  ) { }
+  ) {
+    super();
+  }
 
-  async execute(data: IUpdateProject): Promise<IProject | undefined> {
+  protected async executeInternal(data: IUpdateProject): Promise<IProject | undefined> {
     const projectExists = await this.projectRepository.findById(data.id);
 
     if (!projectExists) {
