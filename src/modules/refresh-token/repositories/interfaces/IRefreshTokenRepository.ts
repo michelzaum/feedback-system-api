@@ -1,8 +1,9 @@
 import type { IRefreshToken } from "../../interfaces/IRefreshToken";
-import type { ICreateRefreshTokenRepositoryInput } from "./ICreateRefreshTokenRepository";
+import type { ICreateRefreshTokenRepositoryInput } from "../interfaces/ICreateRefreshTokenRepository";
 
 export interface IRefreshTokenRepository {
   create(data: ICreateRefreshTokenRepositoryInput): Promise<IRefreshToken>;
   delete(id: string): Promise<void>;
   findById(id: string): Promise<IRefreshToken | null>;
+  refreshToken(refreshTokenId: string): Promise<IRefreshToken | null>;
 }

@@ -19,3 +19,14 @@ For code changes, follow the Caveman workflow before inspecting, modifying, or c
 3. **Each commit request is scoped to that specific request only.** When the user asks to commit, it authorizes committing the changes made up to that point. It does NOT authorize committing future changes proactively. Every subsequent commit requires a new explicit request from the user.
 
 4. **Check the current git branch before implementing a feature.** Before starting to implement a feature the user asked for, check the current git branch name. If it is `dev` or `main`, and the branch name is not related to the requested feature, create a new branch following conventional naming (e.g., `feat/sign-in-page-validations`, `fix/header-not-showing-sign-in-button`). If the branch name is related to the feature or the current branch is not `dev` or `main`, proceed without creating a new branch.
+
+## Database Access Rules
+
+5. **Use cases must not call prisma directly.** All database operations must go through repositories.
+   - Use cases contain business logic only.
+   - Repositories handle database operations, including transactions, queries, and migrations.
+   - This separation ensures the use case layer is independent of the database implementation.
+   - Example: Do not use `prisma.$queryRaw`, `prisma.$transaction`, or any prisma client method directly in use cases.
+   - If atomic operations are needed, add the transaction logic to the repository layer, not the use case.
+
+Violating this rule will cause the agent to fail the code review, as it breaks the separation of concerns architecture.
