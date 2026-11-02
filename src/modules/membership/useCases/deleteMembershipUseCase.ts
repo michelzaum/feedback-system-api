@@ -1,29 +1,15 @@
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 import type { IMembershipRepository } from "../repositories/interfaces/IMembershipRepository";
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IDeleteMembership } from "../interfaces/IDeleteMembership";
+import type { IMembership } from "../interfaces/IMembership";
 
-export class DeleteMembershipUseCase implements IUseCase<IDeleteMembership, void> {
-  constructor(private readonly membershipRepository: IMembershipRepository) { }
+export class DeleteMembershipUseCase extends BaseUseCase<IDeleteMembership, void> {
+  constructor(private readonly membershipRepository: IMembershipRepository) {
+    super();
+  }
 
-  async execute(data: IDeleteMembership): Promise<void> {
-    const requesterMembership = await this.membershipRepository.findMembership(
-      data.organizationId,
-      data.requesterUserId,
-    );
-
-    if (!requesterMembership || requesterMembership.role !== "ADMIN") {
-      throw new Error("Only admins can delete memberships");
-    }
-
-    const membershipExists = await this.membershipRepository.findMembership(
-      data.organizationId,
-      data.userId,
-    );
-
-    if (!membershipExists) {
-      throw new Error("Membership not found");
-    }
-
+  protected async executeInternal(data: IDeleteMembership): Promise<void> {
     await this.membershipRepository.delete(data.organizationId, data.userId);
   }
 }

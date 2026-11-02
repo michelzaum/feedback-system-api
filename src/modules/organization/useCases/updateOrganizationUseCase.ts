@@ -2,11 +2,14 @@ import type { IOrganizationRepository } from "../repositories/interfaces/IOrgani
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { IUpdateOrganization } from "../interfaces/IUpdateOrganization";
 import type { IOrganization } from "../interfaces/IOrganization";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class UpdateOrganizationUseCase implements IUseCase<IUpdateOrganization, IOrganization | undefined> {
-  constructor(private readonly organizationRepository: IOrganizationRepository) { }
+export class UpdateOrganizationUseCase extends BaseUseCase<IUpdateOrganization, IOrganization | undefined> {
+  constructor(private readonly organizationRepository: IOrganizationRepository) {
+    super();
+  }
 
-  async execute(data: IUpdateOrganization): Promise<IOrganization | undefined> {
+  protected async executeInternal(data: IUpdateOrganization): Promise<IOrganization | undefined> {
     const organizationExists = await this.organizationRepository.findById(data.id);
 
     if (!organizationExists) {

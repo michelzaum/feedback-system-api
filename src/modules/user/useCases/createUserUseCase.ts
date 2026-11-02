@@ -3,11 +3,14 @@ import type { IUserRepository } from "../repositories/interfaces/IUserRepository
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ICreateUser } from "../interfaces/ICreateUser";
 import type { IUser } from "../interfaces/IUser";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
-export class CreateUserUseCase implements IUseCase<ICreateUser, IUser> {
-  constructor(private readonly userRepository: IUserRepository) { }
+export class CreateUserUseCase extends BaseUseCase<ICreateUser, IUser> {
+  constructor(private readonly userRepository: IUserRepository) {
+    super();
+  }
 
-  async execute(data: ICreateUser): Promise<IUser> {
+  protected async executeInternal(data: ICreateUser): Promise<IUser> {
     const { name, email, password } = data;
 
     const hashedPassword = await hash(password, 10);

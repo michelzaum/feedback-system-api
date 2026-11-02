@@ -1,25 +1,14 @@
-import type { IUseCase } from "../../../shared/interfaces/IUseCase";
-import type { IMember } from "../interfaces/IMember";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 import type { IMembershipRepository } from "../repositories/interfaces/IMembershipRepository";
+import type { IUseCase } from "../../../shared/interfaces/IUseCase";
+import type { IMembersFromOrganization } from "../interfaces/IMembersFromOrganization";
 
-interface IGetOrganizationMembersInput {
-  organizationId: string;
-  requesterUserId: string;
-}
+export class GetOrganizationMembersUseCase extends BaseUseCase<{ organizationId: string; requesterUserId: string }, IMembersFromOrganization[]> {
+  constructor(private readonly membershipRepository: IMembershipRepository) {
+    super();
+  }
 
-export class GetOrganizationMembersUseCase implements IUseCase<IGetOrganizationMembersInput, IMember[]> {
-  constructor(private readonly membershipRepository: IMembershipRepository) { }
-
-  async execute(data: IGetOrganizationMembersInput): Promise<IMember[]> {
-    const requesterMembership = await this.membershipRepository.findMembership(
-      data.organizationId,
-      data.requesterUserId,
-    );
-
-    if (!requesterMembership || requesterMembership.role !== "ADMIN") {
-      throw new Error("Only admins can view organization members");
-    }
-
-    return await this.membershipRepository.findManyByOrganizationId(data.organizationId);
+  protected async executeInternal({ organizationId, requesterUserId }: { organizationId: string; requesterUserId: string }): Promise<IMembersFromOrganization[]> {
+    return await this.membershipRepository.findManyMembersByOrganizationIds([organizationId]);
   }
 }

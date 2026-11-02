@@ -5,16 +5,19 @@ import type { IRefreshTokenRepository } from "../../refresh-token/repositories/i
 import type { IUseCase } from "../../../shared/interfaces/IUseCase";
 import type { ISignInRequest } from "../interfaces/ISignInRequest";
 import type { ISignInResponse } from "../interfaces/ISignInResponse";
+import { BaseUseCase } from "../../../shared/useCases/BaseUseCase";
 
 const EXPIRATION_TIME_IN_DAYS = 7;
 
-export class SignInUseCase implements IUseCase<ISignInRequest, ISignInResponse> {
+export class SignInUseCase extends BaseUseCase<ISignInRequest, ISignInResponse> {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly refreshTokenRepository: IRefreshTokenRepository,
-  ) { }
+  ) {
+    super();
+  }
 
-  async execute(data: ISignInRequest): Promise<ISignInResponse> {
+  protected async executeInternal(data: ISignInRequest): Promise<ISignInResponse> {
     const { email, password } = data;
 
     const user = await this.userRepository.findByEmail(email);
