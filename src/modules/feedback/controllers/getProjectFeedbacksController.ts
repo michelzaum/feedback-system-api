@@ -11,10 +11,6 @@ export class GetProjectFeedbacksController {
     try {
       const feedbacks = await this.getProjectFeedbacksUseCase.execute({ projectId });
 
-      if (feedbacks.length === 0) {
-        return response.status(404).json({ error: "No feedbacks found for this project" });
-      }
-
       return response.json(feedbacks);
     } catch (error: any) {
       return response.status(400).json({ error: error.message });
