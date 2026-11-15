@@ -19,6 +19,8 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
       updatedAt: new Date(),
       projectId: data.projectId,
       status: data.status ?? FeedbackStatus.NEW,
+      assigneeId: null,
+      assignee: null,
     };
 
     this.feedbacks.push(feedback);
@@ -29,6 +31,10 @@ export class InMemoryFeedbackRepository implements IFeedbackRepository {
     this.feedbacks.forEach((item) => {
       if (item.id === id) {
         item.status = data.status;
+        if (data.assigneeId !== undefined) {
+          item.assigneeId = data.assigneeId;
+          item.assignee = null;
+        }
         item.updatedAt = new Date();
         return Promise.resolve(item);
       }

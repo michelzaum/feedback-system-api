@@ -18,6 +18,7 @@ export class UpdateFeedbackUseCase extends BaseUseCase<IUpdateFeedback, IFeedbac
 
     return await this.feedbackRepository.update(data.id, {
       status: data.status,
+      ...(data.assigneeId !== undefined && { assigneeId: data.assigneeId }),
     });
   }
 }

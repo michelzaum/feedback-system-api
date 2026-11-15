@@ -14,4 +14,11 @@ export interface IFeedbackNoteRepository {
     authorId: string;
     content: string;
   }): Promise<IFeedbackNote>;
+  delete(input: {
+    organizationId: string;
+    projectId: string;
+    feedbackId: string;
+    noteId: string;
+    requesterUserId: string;
+  }): Promise<void>;
 }
