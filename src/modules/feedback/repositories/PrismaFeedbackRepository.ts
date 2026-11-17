@@ -27,6 +27,7 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
             projectId,
             status,
           },
+          include: { assignee: { select: { id: true, name: true } } },
         });
       },
     );
@@ -36,23 +37,48 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
     id: string,
     data: IUpdateFeedbackRepositoryInput,
   ): Promise<IFeedback | undefined> {
-    return await prisma.feedbacks.update({
-      where: { id: id },
-      data: {
-        status: data.status,
-      },
+    return await prisma.$transaction(async (tx) => {
+      if (data.assigneeId) {
+        const feedback = await tx.feedbacks.findUnique({
+          where: { id },
+          select: { project: { select: { organizationId: true } } },
+        });
+        if (!feedback) throw new Error("Feedback not found");
+
+        const membership = await tx.memberships.findUnique({
+          where: {
+            organizationId_userId: {
+              organizationId: feedback.project.organizationId,
+              userId: data.assigneeId,
+            },
+          },
+          select: { userId: true },
+        });
+        if (!membership) throw new Error("Assignee must be an organization member");
+      }
+
+      return await tx.feedbacks.update({
+        where: { id },
+        data: {
+          status: data.status,
+          ...(data.assigneeId !== undefined && { assigneeId: data.assigneeId }),
+        },
+        include: { assignee: { select: { id: true, name: true } } },
+      });
     });
   }
 
   async findById(id: string): Promise<IFeedback | null> {
     return await prisma.feedbacks.findUnique({
       where: { id: id },
+      include: { assignee: { select: { id: true, name: true } } },
     });
   }
 
   async findManyByProjectId(projectId: string): Promise<IFeedback[]> {
     return await prisma.feedbacks.findMany({
       where: { projectId },
+      include: { assignee: { select: { id: true, name: true } } },
     });
   }
 
@@ -63,6 +89,7 @@ export class PrismaFeedbackRepository implements IFeedbackRepository {
           organizationId,
         },
       },
+      include: { assignee: { select: { id: true, name: true } } },
     });
   }
 }

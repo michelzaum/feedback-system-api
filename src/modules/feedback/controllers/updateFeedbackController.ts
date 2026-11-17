@@ -8,10 +8,14 @@ export class UpdateFeedbackController {
 
   async handle(request: Request<IUpdateFeedbackRequestParams, any, IUpdateFeedbackRequestBody>, response: Response) {
     const { id } = request.params;
-    const { status } = request.body;
+    const { status, assigneeId } = request.body;
 
     try {
-      const feedback = await this.updateFeedbackUseCase.execute({ id, status });
+      const feedback = await this.updateFeedbackUseCase.execute({
+        id,
+        status,
+        ...(assigneeId !== undefined && { assigneeId }),
+      });
 
       if (!feedback) {
         return response.status(404).json({ error: "Feedback not found" });

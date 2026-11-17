@@ -8,4 +8,6 @@ export interface IFeedback {
   updatedAt: Date;
   projectId: string;
   status: FeedbackStatus;
+  assigneeId: string | null;
+  assignee?: { id: string; name: string } | null;
 }
