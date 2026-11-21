@@ -39,6 +39,9 @@ import { makeGetFeedbackController } from '../modules/feedback/factories/makeGet
 import { makeGetProjectFeedbacksController } from '../modules/feedback/factories/makeGetProjectFeedbacksController';
 import { makeUpdateFeedbackController } from '../modules/feedback/factories/makeUpdateFeedbackController';
 import { makeFindFeedbacksByOrganizationController } from '../modules/feedback/factories/makeFindFeedbacksByOrganizationController';
+import { makeGetFeedbackNotesController } from '../modules/feedback/factories/makeGetFeedbackNotesController';
+import { makeCreateFeedbackNoteController } from '../modules/feedback/factories/makeCreateFeedbackNoteController';
+import { makeDeleteFeedbackNoteController } from '../modules/feedback/factories/makeDeleteFeedbackNoteController';
 
 import { makeSignInController } from '../modules/sign-in/factories/makeSignInController';
 import { makeSignOutController } from '../modules/sign-out/factories/makeSignOutController';
@@ -127,6 +130,9 @@ app.delete('/organizations/:organizationId/projects/:id', async (req, res) => ma
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeGetFeedbackController().handle(req, res));
 app.get('/organizations/:organizationId/projects/:projectId/feedbacks', async (req, res) => makeGetProjectFeedbacksController().handle(req, res));
 app.patch('/organizations/:organizationId/projects/:projectId/feedbacks/:id', async (req, res) => makeUpdateFeedbackController().handle(req, res));
+app.get('/organizations/:organizationId/projects/:projectId/feedbacks/:feedbackId/notes', async (req, res) => makeGetFeedbackNotesController().handle(req, res));
+app.post('/organizations/:organizationId/projects/:projectId/feedbacks/:feedbackId/notes', async (req, res) => makeCreateFeedbackNoteController().handle(req, res));
+app.delete('/organizations/:organizationId/projects/:projectId/feedbacks/:feedbackId/notes/:noteId', async (req, res) => makeDeleteFeedbackNoteController().handle(req, res));
 app.get('/organizations/:organizationId/feedbacks', async (req, res) => makeFindFeedbacksByOrganizationController().handle(req, res));
 
 app.listen(PORT, () => {

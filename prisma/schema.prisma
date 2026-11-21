@@ -33,6 +33,8 @@ model Users {
   updatedAt     DateTime       @updatedAt
   memberships   Memberships[]
   refreshTokens RefreshToken[]
+  feedbackNotes FeedbackNotes[]
+  assignedFeedbacks Feedbacks[] @relation("FeedbackAssignee")
 
   @@map("users")
 }
@@ -90,8 +92,25 @@ model Feedbacks {
 
   projectId String   @db.Uuid
   project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  notes     FeedbackNotes[]
+  assigneeId String? @db.Uuid
+  assignee   Users? @relation("FeedbackAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
 
+  @@index([assigneeId])
   @@map("feedbacks")
+}
+
+model FeedbackNotes {
+  id         String    @id @default(uuid()) @db.Uuid
+  content    String
+  createdAt  DateTime  @default(now())
+  feedbackId String    @db.Uuid
+  authorId   String    @db.Uuid
+
+  feedback Feedbacks @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  author   Users     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("feedback_notes")
 }
 
 enum FeedbackStatus {
